@@ -5,8 +5,10 @@ import { StepList } from './StepList'
 import { StepPropertiesPanel } from './StepPropertiesPanel'
 import { FlowPreview } from './FlowPreview'
 import { JsonView } from './JsonView'
+import { CodeImportDialog } from './CodeImportDialog'
 import { defaultFlow } from './defaultFlow'
 import { newId, newStep } from './factory'
+import { findCandidates, type CodeImportCandidate } from './codeImport'
 import type { FlowConfig, FlowStep } from './types'
 
 const { saveAs } = fileSaver
@@ -63,6 +65,7 @@ export function FlowEditor() {
   const [selectedStepId, setSelectedStepId] = useState(defaultFlow.startStepId)
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null)
   const [jsonOpen, setJsonOpen] = useState(false)
+  const [codeCandidates, setCodeCandidates] = useState<CodeImportCandidate[] | null>(null)
   const flowRef = useRef(flow)
 
   useEffect(() => {
@@ -138,20 +141,49 @@ export function FlowEditor() {
   }
 
   function handleImport(file: File) {
+    const isJson = file.name.toLowerCase().endsWith('.json') || file.type === 'application/json'
     const reader = new FileReader()
     reader.onload = () => {
-      try {
-        const parsed = JSON.parse(String(reader.result)) as FlowConfig
-        if (!Array.isArray(parsed.steps) || parsed.steps.length === 0) {
-          throw new Error('Arquivo sem etapas válidas.')
+      const text = String(reader.result)
+
+      if (isJson) {
+        try {
+          const parsed = JSON.parse(text) as FlowConfig
+          if (!Array.isArray(parsed.steps) || parsed.steps.length === 0) {
+            throw new Error('Arquivo sem etapas válidas.')
+          }
+          persist(parsed)
+          setSelectedStepId(parsed.steps[0].id)
+        } catch {
+          window.alert('Não foi possível importar: o arquivo não é um fluxo válido.')
         }
-        persist(parsed)
-        setSelectedStepId(parsed.steps[0].id)
-      } catch {
-        window.alert('Não foi possível importar: o arquivo não é um fluxo válido.')
+        return
       }
+
+      // Não é .json — tenta reconhecer um array de perguntas no código-fonte
+      // (.tsx/.ts/.js) e abre o assistente de mapeamento de campos.
+      setCodeCandidates(findCandidates(text))
     }
     reader.readAsText(file)
+  }
+
+  function handleGenerateFromCode(steps: FlowStep[], mode: 'replace' | 'append') {
+    if (steps.length === 0) return
+
+    if (mode === 'replace') {
+      persist({ ...flow, steps, startStepId: steps[0].id })
+      setSelectedStepId(steps[0].id)
+      return
+    }
+
+    // Encadeia a última etapa existente na primeira das novas, pra virar um fluxo contínuo.
+    const existing = [...flow.steps]
+    const last = existing[existing.length - 1]
+    if (last && last.defaultNextStepId === null) {
+      existing[existing.length - 1] = { ...last, defaultNextStepId: steps[0].id }
+    }
+    persist({ ...flow, steps: [...existing, ...steps] })
+    setSelectedStepId(steps[0].id)
   }
 
   function handleDownload() {
@@ -203,6 +235,12 @@ export function FlowEditor() {
         </div>
       </div>
       <JsonView open={jsonOpen} onClose={() => setJsonOpen(false)} flow={flow} onApply={persist} />
+      <CodeImportDialog
+        open={codeCandidates !== null}
+        onClose={() => setCodeCandidates(null)}
+        candidates={codeCandidates ?? []}
+        onGenerate={handleGenerateFromCode}
+      />
     </div>
   )
 }

@@ -49,7 +49,7 @@ export function FlowsTopBar({
           variant="secondary"
           size="sm"
           onClick={() => fileInputRef.current?.click()}
-          title="Importar arquivo .json"
+          title="Importar .json de fluxo, ou .tsx/.ts/.js com perguntas"
         >
           <Upload size={16} />
           <span className="hidden md:inline">Importar</span>
@@ -57,7 +57,7 @@ export function FlowsTopBar({
         <input
           ref={fileInputRef}
           type="file"
-          accept="application/json"
+          accept=".json,application/json,.tsx,.ts,.jsx,.js,text/plain"
           className="hidden"
           onChange={(e) => {
             const file = e.target.files?.[0]

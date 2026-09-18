@@ -6,7 +6,7 @@ import { Label } from '../../components/ui/Label'
 import { Select } from '../../components/ui/Select'
 import { Switch } from '../../components/ui/Switch'
 import { cn } from '../../lib/utils'
-import { defaultField, defaultFieldOption, newId } from '../factory'
+import { defaultField, defaultFieldOption, newId, slug } from '../factory'
 import type { FieldType, FormField } from '../types'
 
 const TYPE_OPTIONS: Array<{ value: FieldType; label: string }> = [
@@ -299,15 +299,6 @@ function OptionsEditor({
       </button>
     </div>
   )
-}
-
-function slug(text: string) {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '')
 }
 
 export { TYPE_OPTIONS as FIELD_TYPE_OPTIONS }

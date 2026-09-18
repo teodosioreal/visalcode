@@ -19,6 +19,7 @@
     "@tanstack/react-router": "latest",
     "@tanstack/react-router-devtools": "latest",
     "@tanstack/react-start": "latest",
+    "acorn": "^8.18.0",
     "clsx": "^2.1.1",
     "file-saver": "^2.0.5",
     "jszip": "^3.10.2",
