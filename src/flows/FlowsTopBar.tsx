@@ -10,12 +10,14 @@ export function FlowsTopBar({
   onOpenJson,
   onImport,
   onDownload,
+  importing,
 }: {
   flowName: string
   lastSavedAt: Date | null
   onOpenJson: () => void
   onImport: (file: File) => void
   onDownload: () => void
+  importing?: boolean
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -49,15 +51,16 @@ export function FlowsTopBar({
           variant="secondary"
           size="sm"
           onClick={() => fileInputRef.current?.click()}
-          title="Importar .json de fluxo, ou .tsx/.ts/.js com perguntas"
+          disabled={importing}
+          title="Importar .json de fluxo, .tsx/.ts/.js com perguntas, ou .zip de um projeto inteiro"
         >
           <Upload size={16} />
-          <span className="hidden md:inline">Importar</span>
+          <span className="hidden md:inline">{importing ? 'Lendo .zip…' : 'Importar'}</span>
         </Button>
         <input
           ref={fileInputRef}
           type="file"
-          accept=".json,application/json,.tsx,.ts,.jsx,.js,text/plain"
+          accept=".json,application/json,.tsx,.ts,.jsx,.js,.zip,application/zip,text/plain"
           className="hidden"
           onChange={(e) => {
             const file = e.target.files?.[0]

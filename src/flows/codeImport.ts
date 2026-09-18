@@ -1,4 +1,5 @@
 import * as acorn from 'acorn'
+import JSZip from 'jszip'
 import { defaultField, defaultFieldOption, newId, newStep, slug } from './factory'
 import type { FlowStep } from './types'
 
@@ -10,7 +11,15 @@ export type CodeImportCandidate = {
   items: CodeArrayItem[]
   /** Todas as chaves usadas nos itens, pra montar os selects de mapeamento. */
   keys: string[]
+  /** Caminho do arquivo de origem, só preenchido ao importar de um .zip. */
+  filePath?: string
 }
+
+const CODE_FILE_PATTERN = /\.(tsx|ts|jsx|js|mjs)$/i
+const IGNORED_PATH_PATTERN = /(^|\/)(node_modules|\.next|\.git|dist|build|out)\//i
+/** Componentes de UI genéricos (shadcn/radix etc.) quase nunca têm listas de
+ * perguntas de verdade — pular esses arquivos evita ruído no resultado. */
+const LIKELY_IRRELEVANT_PATH = /\/components\/ui\//i
 
 const QUESTION_KEY_GUESSES = ['question', 'title', 'label', 'text', 'pergunta', 'titulo']
 const SUBTITLE_KEY_GUESSES = ['subtitle', 'description', 'desc', 'subtitulo', 'descricao']
@@ -156,26 +165,54 @@ function parseArrayLiteral(raw: string): unknown[] | null {
   }
 }
 
-export function findCandidates(source: string): CodeImportCandidate[] {
+export function findCandidates(source: string, filePath?: string): CodeImportCandidate[] {
   const declarations = findArrayDeclarations(source)
   const candidates: CodeImportCandidate[] = []
 
   for (const decl of declarations) {
     const parsed = parseArrayLiteral(decl.raw)
-    if (!parsed || parsed.length === 0) continue
+    if (!parsed || parsed.length < 2) continue
 
     const items = parsed.filter(
       (item): item is CodeArrayItem =>
         typeof item === 'object' && item !== null && !Array.isArray(item),
     )
     // Heurística: só considera candidato se a maioria dos itens virou objeto
-    // (descarta arrays de strings soltas, números, etc.)
+    // (descarta arrays de strings soltas, números, etc.), e se pelo menos
+    // um dos campos parece texto (evita capturar arrays de config numérica).
     if (items.length < parsed.length * 0.6) continue
+    const hasTextField = items.some((item) =>
+      Object.values(item).some((v) => typeof v === 'string' && v.length > 3),
+    )
+    if (!hasTextField) continue
 
     const keySet = new Set<string>()
     for (const item of items) for (const key of Object.keys(item)) keySet.add(key)
 
-    candidates.push({ name: decl.name, items, keys: [...keySet] })
+    candidates.push({ name: decl.name, items, keys: [...keySet], filePath })
+  }
+
+  return candidates
+}
+
+/** Mesma coisa, mas varrendo todos os arquivos de código dentro de um .zip
+ * (projeto inteiro) — ignora node_modules/build e pastas de componentes de
+ * UI genéricos, que quase nunca têm listas de perguntas de verdade. */
+export async function findCandidatesInZip(file: File | Blob): Promise<CodeImportCandidate[]> {
+  const zip = await JSZip.loadAsync(file)
+  const candidates: CodeImportCandidate[] = []
+
+  const entries = Object.values(zip.files).filter(
+    (entry) =>
+      !entry.dir &&
+      CODE_FILE_PATTERN.test(entry.name) &&
+      !IGNORED_PATH_PATTERN.test(entry.name) &&
+      !LIKELY_IRRELEVANT_PATH.test(entry.name),
+  )
+
+  for (const entry of entries) {
+    const text = await entry.async('text')
+    candidates.push(...findCandidates(text, entry.name))
   }
 
   return candidates

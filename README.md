@@ -101,16 +101,20 @@ da tela.
   visual — dá pra editar o JSON diretamente ali e clicar em "Aplicar" pra
   atualizar o fluxo (sincronização nos dois sentidos: editar no formulário
   visual atualiza o JSON, e editar o JSON atualiza o formulário visual).
-- **"Importar"** aceita dois tipos de arquivo:
+- **"Importar"** aceita três tipos de arquivo:
   - Um `.json` de fluxo (gerado pelo próprio "Baixar .json") — carrega direto.
   - Um arquivo de **código** (`.tsx`/`.ts`/`.jsx`/`.js`) que tenha uma lista de
-    perguntas parecida com `[{ question: "...", options: [...] }, ...]`. O
-    editor acha essa lista sozinho (sem executar o código, só lê o texto) e
-    abre um assistente pra você dizer qual campo é a pergunta, as opções, o
-    subtítulo e a imagem — depois gera uma etapa por pergunta automaticamente,
-    encadeadas em sequência, com a opção de já adicionar uma etapa final de
-    captura de contato (nome + WhatsApp). Dá pra escolher se isso substitui
-    o fluxo atual ou entra no final dele.
+    perguntas parecida com `[{ question: "...", options: [...] }, ...]`.
+  - Um **`.zip` do projeto inteiro** — o editor vasculha todos os arquivos de
+    código dentro dele (ignorando `node_modules`, pastas de build e
+    componentes de UI genéricos) procurando essa mesma lista de perguntas.
+
+  Em qualquer um dos dois últimos casos, o editor acha a lista sozinho (sem
+  executar o código, só lê o texto) e abre um assistente pra você dizer qual
+  campo é a pergunta, as opções, o subtítulo e a imagem — depois gera uma
+  etapa por pergunta automaticamente, encadeadas em sequência, com a opção
+  de já adicionar uma etapa final de captura de contato (nome + WhatsApp).
+  Dá pra escolher se isso substitui o fluxo atual ou entra no final dele.
 - **"Baixar .json"** exporta o fluxo atual pra usar/versionar em outro lugar.
 - Assim como na aba Páginas, fica salvo automaticamente no navegador com
   data/hora da última alteração.

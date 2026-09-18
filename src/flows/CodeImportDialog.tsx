@@ -43,8 +43,8 @@ export function CodeImportDialog({
     return (
       <Dialog open={open} onClose={onClose} title="Importar de código">
         <p className="text-sm text-[var(--vb-text-muted)]">
-          Não encontrei nenhuma lista de perguntas reconhecível nesse arquivo — ele precisa ter
-          um array de objetos tipo{' '}
+          Não encontrei nenhuma lista de perguntas reconhecível nesse arquivo (ou em nenhum
+          arquivo do .zip) — precisa ter um array de objetos tipo{' '}
           <code className="rounded bg-[var(--vb-surface-2)] px-1 py-0.5">
             {'{ question: "...", options: [...] }'}
           </code>
@@ -80,6 +80,7 @@ export function CodeImportDialog({
             >
               {candidates.map((c, i) => (
                 <option key={c.name + i} value={i}>
+                  {c.filePath ? `${c.filePath} — ` : ''}
                   {c.name} ({c.items.length} itens)
                 </option>
               ))}
@@ -87,7 +88,16 @@ export function CodeImportDialog({
           </div>
         ) : (
           <p className="text-xs text-[var(--vb-text-muted)]">
-            Variável <b>{candidate.name}</b> — {candidate.items.length} itens.
+            {candidate.filePath ? (
+              <>
+                Arquivo <b>{candidate.filePath}</b>, variável <b>{candidate.name}</b> —{' '}
+              </>
+            ) : (
+              <>
+                Variável <b>{candidate.name}</b> —{' '}
+              </>
+            )}
+            {candidate.items.length} itens.
           </p>
         )}
 

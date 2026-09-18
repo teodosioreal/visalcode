@@ -8,7 +8,7 @@ import { JsonView } from './JsonView'
 import { CodeImportDialog } from './CodeImportDialog'
 import { defaultFlow } from './defaultFlow'
 import { newId, newStep } from './factory'
-import { findCandidates, type CodeImportCandidate } from './codeImport'
+import { findCandidates, findCandidatesInZip, type CodeImportCandidate } from './codeImport'
 import type { FlowConfig, FlowStep } from './types'
 
 const { saveAs } = fileSaver
@@ -66,6 +66,7 @@ export function FlowEditor() {
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null)
   const [jsonOpen, setJsonOpen] = useState(false)
   const [codeCandidates, setCodeCandidates] = useState<CodeImportCandidate[] | null>(null)
+  const [importingZip, setImportingZip] = useState(false)
   const flowRef = useRef(flow)
 
   useEffect(() => {
@@ -140,8 +141,23 @@ export function FlowEditor() {
     persist({ ...flow, startStepId: id })
   }
 
-  function handleImport(file: File) {
-    const isJson = file.name.toLowerCase().endsWith('.json') || file.type === 'application/json'
+  async function handleImport(file: File) {
+    const lowerName = file.name.toLowerCase()
+
+    if (lowerName.endsWith('.zip') || file.type === 'application/zip') {
+      setImportingZip(true)
+      try {
+        const candidates = await findCandidatesInZip(file)
+        setCodeCandidates(candidates)
+      } catch {
+        window.alert('Não foi possível ler esse .zip — confira se o arquivo não está corrompido.')
+      } finally {
+        setImportingZip(false)
+      }
+      return
+    }
+
+    const isJson = lowerName.endsWith('.json') || file.type === 'application/json'
     const reader = new FileReader()
     reader.onload = () => {
       const text = String(reader.result)
@@ -209,6 +225,7 @@ export function FlowEditor() {
         onOpenJson={() => setJsonOpen(true)}
         onImport={handleImport}
         onDownload={handleDownload}
+        importing={importingZip}
       />
       <div className="grid min-h-0 flex-1 grid-cols-1 md:grid-cols-[220px_1fr_360px]">
         <div className="hidden border-r border-[var(--vb-border)] bg-[var(--vb-surface-1)] md:block">
