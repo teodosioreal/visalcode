@@ -122,10 +122,19 @@ export type FlowStep = {
   defaultNextStepId: string | null
 }
 
+/** Envia as respostas pra uma URL externa (Zapier, Make, n8n, seu próprio
+ * servidor...) sempre que alguém completa o fluxo — via POST, direto do
+ * navegador de quem preencheu, sem passar por nenhum servidor nosso. */
+export type WebhookConfig = {
+  enabled: boolean
+  url: string
+}
+
 export type FlowConfig = {
   id: string
   name: string
   updatedAt?: string
   startStepId: string
   steps: FlowStep[]
+  webhook?: WebhookConfig
 }

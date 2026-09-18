@@ -5,6 +5,7 @@ import { FieldRenderer } from './FieldRenderer'
 import { transitionStyle } from './transitionStyles'
 import { resolveNextStepId, validateStep } from './validation'
 import { buildFieldsById, interpolate } from './interpolate'
+import { buildWebhookPayload, sendWebhook } from './webhook'
 import type { FieldValue, FlowConfig, FlowStep } from './types'
 
 export function FlowPreview({
@@ -67,6 +68,12 @@ export function FlowPreview({
     setLoadingMessage(null)
   }
 
+  function notifyWebhookOnCompletion(nextValues: Record<string, FieldValue>) {
+    if (!flow.webhook?.enabled || !flow.webhook.url) return
+    const payload = buildWebhookPayload(flow, nextValues, fieldsById)
+    sendWebhook(flow.webhook.url, payload).catch(() => {})
+  }
+
   function goNext(step: FlowStep, nextValues: Record<string, FieldValue>) {
     const proceed = () => {
       const nextId = resolveNextStepId(step, nextValues)
@@ -74,6 +81,7 @@ export function FlowPreview({
         setPlayingStepId(nextId)
       } else {
         setFinished(true)
+        notifyWebhookOnCompletion(nextValues)
       }
     }
 
@@ -226,7 +234,11 @@ export function FlowPreview({
                 }
                 const stepErrors = validateStep(shownStep, values)
                 setErrors(stepErrors)
-                if (Object.keys(stepErrors).length > 0) e.preventDefault()
+                if (Object.keys(stepErrors).length > 0) {
+                  e.preventDefault()
+                } else {
+                  notifyWebhookOnCompletion(values)
+                }
               }}
               className="mt-6 inline-flex h-9 w-full items-center justify-center gap-2 rounded-lg bg-[var(--vb-accent)] px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[var(--vb-accent-strong)]"
             >

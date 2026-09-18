@@ -6,6 +6,7 @@ import { StepPropertiesPanel } from './StepPropertiesPanel'
 import { FlowPreview } from './FlowPreview'
 import { JsonView } from './JsonView'
 import { CodeImportDialog } from './CodeImportDialog'
+import { FlowSettingsDialog } from './FlowSettingsDialog'
 import { defaultFlow } from './defaultFlow'
 import { newId, newStep } from './factory'
 import { findCandidates, findCandidatesInZip, type CodeImportCandidate } from './codeImport'
@@ -65,6 +66,7 @@ export function FlowEditor() {
   const [selectedStepId, setSelectedStepId] = useState(defaultFlow.startStepId)
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null)
   const [jsonOpen, setJsonOpen] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const [codeCandidates, setCodeCandidates] = useState<CodeImportCandidate[] | null>(null)
   const [importingZip, setImportingZip] = useState(false)
   const flowRef = useRef(flow)
@@ -226,6 +228,8 @@ export function FlowEditor() {
       <FlowsTopBar
         flowName={flow.name}
         lastSavedAt={lastSavedAt}
+        webhookEnabled={!!flow.webhook?.enabled}
+        onOpenSettings={() => setSettingsOpen(true)}
         onOpenJson={() => setJsonOpen(true)}
         onImport={handleImport}
         onDownload={handleDownload}
@@ -258,6 +262,12 @@ export function FlowEditor() {
         </div>
       </div>
       <JsonView open={jsonOpen} onClose={() => setJsonOpen(false)} flow={flow} onApply={persist} />
+      <FlowSettingsDialog
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        flow={flow}
+        onChange={(patch) => persist({ ...flow, ...patch })}
+      />
       <CodeImportDialog
         open={codeCandidates !== null}
         onClose={() => setCodeCandidates(null)}

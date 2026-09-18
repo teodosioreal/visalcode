@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { Check, Code2, Download, Upload, Workflow } from 'lucide-react'
+import { Check, Code2, Download, Settings2, Upload, Workflow } from 'lucide-react'
 import ThemeToggle from '../components/ThemeToggle'
 import { Button } from '../components/ui/Button'
 import { formatFullDateTime, formatShortDateTime } from '../lib/utils'
@@ -7,6 +7,8 @@ import { formatFullDateTime, formatShortDateTime } from '../lib/utils'
 export function FlowsTopBar({
   flowName,
   lastSavedAt,
+  webhookEnabled,
+  onOpenSettings,
   onOpenJson,
   onImport,
   onDownload,
@@ -14,6 +16,8 @@ export function FlowsTopBar({
 }: {
   flowName: string
   lastSavedAt: Date | null
+  webhookEnabled?: boolean
+  onOpenSettings: () => void
   onOpenJson: () => void
   onImport: (file: File) => void
   onDownload: () => void
@@ -42,6 +46,20 @@ export function FlowsTopBar({
       </div>
 
       <div className="flex min-w-0 shrink items-center gap-1.5 sm:gap-2">
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          onClick={onOpenSettings}
+          title="Configurações do fluxo (nome, webhook)"
+          className="relative"
+        >
+          <Settings2 size={16} />
+          <span className="hidden md:inline">Webhook</span>
+          {webhookEnabled ? (
+            <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-emerald-500" />
+          ) : null}
+        </Button>
         <Button type="button" variant="secondary" size="sm" onClick={onOpenJson} title="Ver/editar JSON">
           <Code2 size={16} />
           <span className="hidden md:inline">Ver JSON</span>

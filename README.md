@@ -130,6 +130,24 @@ da tela.
     de saída de verdade (ex: `https://wa.me/55...`, um checkout, uma página
     de agendamento) em vez de avançar pra outra etapa — o ponto final real
     do funil, com texto do botão customizável e opção de abrir em nova aba.
+- **"Webhook"** (botão no topo, com uma bolinha verde quando ativado): abre as
+  configurações do fluxo — nome, e o **webhook**. Cole ali a URL de um
+  webhook (do Zapier, Make, n8n, ou de um endpoint seu) e toda vez que
+  alguém completar o fluxo (chegar no fim ou clicar no link final da
+  etapa), o navegador de quem preencheu manda um `POST` com as respostas
+  em JSON direto pra essa URL — sem passar por nenhum servidor nosso, então
+  funciona mesmo hospedado como site estático. O botão **"Testar webhook"**
+  manda um envio de exemplo na hora e mostra se deu certo. Formato do
+  envio:
+  ```json
+  {
+    "flowId": "...",
+    "flowName": "...",
+    "completedAt": "2025-01-01T12:00:00.000Z",
+    "answers": { "idDoCampo": "valor" },
+    "answersWithLabels": [{ "fieldId": "...", "label": "...", "value": "..." }]
+  }
+  ```
 - **"Ver JSON"**: mostra o arquivo de configuração por trás do editor
   visual — dá pra editar o JSON diretamente ali e clicar em "Aplicar" pra
   atualizar o fluxo (sincronização nos dois sentidos: editar no formulário
