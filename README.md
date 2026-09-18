@@ -80,10 +80,13 @@ da tela.
   ver a transição, a validação e o avanço entre etapas acontecendo (depois,
   **"Sair do teste"** volta a mostrar a etapa que você está editando).
 - **Painel direito**, por etapa selecionada:
-  - **Etapa**: título, descrição e uma imagem opcional no topo da etapa
-    (URL). A descrição aceita `{{id-do-campo}}` pra citar a resposta dada
-    numa etapa anterior — útil pra montar uma etapa final de "diagnóstico"
-    que resume o que a pessoa preencheu antes de pedir o contato dela.
+  - **Etapa**: título, descrição e uma imagem opcional (URL), que pode
+    aparecer como **banner no topo do card** ou como **fundo cobrindo a
+    etapa inteira** (com uma sobreposição escura automática pra manter o
+    texto legível em cima da foto). A descrição aceita `{{id-do-campo}}`
+    pra citar a resposta dada numa etapa anterior — útil pra montar uma
+    etapa final de "diagnóstico" que resume o que a pessoa preencheu antes
+    de pedir o contato dela.
   - **Efeito e tempo de transição**: tipo de animação (fade, deslizar,
     zoom, step-up...), duração em ms, delay e curva de easing (inclusive
     `cubic-bezier` personalizado).

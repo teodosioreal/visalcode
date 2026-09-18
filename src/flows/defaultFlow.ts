@@ -25,6 +25,7 @@ export const defaultFlow: FlowConfig = {
       title: 'Você tem alguma tatuagem nos pés?',
       description: 'Ajuda a entender melhor o seu perfil.',
       imageUrl: '',
+      imageMode: 'banner',
       fields: [
         {
           id: 'tattoo',
@@ -52,6 +53,7 @@ export const defaultFlow: FlowConfig = {
       title: 'Costuma pintar as unhas dos pés?',
       description: 'Informação opcional, mas ajuda no seu diagnóstico.',
       imageUrl: '',
+      imageMode: 'banner',
       fields: [
         {
           id: 'nails',
@@ -79,6 +81,7 @@ export const defaultFlow: FlowConfig = {
       title: 'Qual o formato dos seus dedos?',
       description: '',
       imageUrl: '',
+      imageMode: 'banner',
       fields: [
         {
           id: 'shape',
@@ -106,6 +109,7 @@ export const defaultFlow: FlowConfig = {
       title: 'Qual o tamanho do seu pé?',
       description: 'Compradores costumam filtrar por tamanho.',
       imageUrl: '',
+      imageMode: 'banner',
       fields: [
         {
           id: 'size',
@@ -133,6 +137,7 @@ export const defaultFlow: FlowConfig = {
       title: 'Como são seus cuidados com os pés?',
       description: '',
       imageUrl: '',
+      imageMode: 'banner',
       fields: [
         {
           id: 'care',
@@ -165,6 +170,7 @@ export const defaultFlow: FlowConfig = {
       description:
         'Com base no que você nos contou — tatuagem: {{tattoo}}, unhas: {{nails}}, formato dos dedos: {{shape}}, tamanho do pé: {{size}} e cuidados: {{care}} — o seu perfil tem tudo pra se destacar. Deixe seu contato abaixo que a gente te chama com os próximos passos.',
       imageUrl: '',
+      imageMode: 'banner',
       fields: [
         {
           id: 'lead-nome',

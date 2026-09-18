@@ -50,7 +50,7 @@ export function StepPropertiesPanel({
             />
           </div>
           <div>
-            <Label htmlFor="step-image">Imagem no topo da etapa (opcional)</Label>
+            <Label htmlFor="step-image">Imagem da etapa (opcional)</Label>
             <Input
               id="step-image"
               placeholder="https://..."
@@ -58,6 +58,33 @@ export function StepPropertiesPanel({
               onChange={(e) => onChange({ imageUrl: e.target.value })}
             />
           </div>
+          {step.imageUrl ? (
+            <div>
+              <Label>Como mostrar a imagem</Label>
+              <div className="flex flex-col gap-1.5">
+                <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-[var(--vb-border)] px-3 py-2 text-sm text-[var(--vb-text)] has-[:checked]:border-[var(--vb-accent)] has-[:checked]:bg-[var(--vb-accent)]/10">
+                  <input
+                    type="radio"
+                    name="imageMode"
+                    className="accent-[var(--vb-accent)]"
+                    checked={(step.imageMode ?? 'banner') === 'banner'}
+                    onChange={() => onChange({ imageMode: 'banner' })}
+                  />
+                  Banner no topo do card
+                </label>
+                <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-[var(--vb-border)] px-3 py-2 text-sm text-[var(--vb-text)] has-[:checked]:border-[var(--vb-accent)] has-[:checked]:bg-[var(--vb-accent)]/10">
+                  <input
+                    type="radio"
+                    name="imageMode"
+                    className="accent-[var(--vb-accent)]"
+                    checked={step.imageMode === 'background'}
+                    onChange={() => onChange({ imageMode: 'background' })}
+                  />
+                  Fundo cobrindo a etapa inteira
+                </label>
+              </div>
+            </div>
+          ) : null}
         </div>
       </Section>
 

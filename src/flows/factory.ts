@@ -67,6 +67,7 @@ export function newStep(title = 'Nova etapa'): FlowStep {
     title,
     description: '',
     imageUrl: '',
+    imageMode: 'banner',
     fields: [defaultField()],
     validation: { required: true, advanceTrigger: 'button', nextButtonLabel: 'Próximo' },
     transition: defaultTransition(),

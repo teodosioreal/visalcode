@@ -127,61 +127,86 @@ export function FlowPreview({
             </Button>
           </div>
         ) : (
-          <div
-            key={shownStepId}
-            style={transitionStyle(shownStep.transition, phase)}
-            className="w-full max-w-md overflow-hidden rounded-2xl border border-[var(--vb-border)] bg-white shadow-sm"
-          >
-            {shownStep.imageUrl ? (
-              <img
-                src={shownStep.imageUrl}
-                alt=""
-                className="h-40 w-full object-cover"
-              />
-            ) : null}
+          (() => {
+            const hasBackground =
+              !!shownStep.imageUrl && (shownStep.imageMode ?? 'banner') === 'background'
+            const hasBanner = !!shownStep.imageUrl && !hasBackground
 
-            <div className="p-8">
-              <h3 className="text-xl font-bold text-gray-900">{shownStep.title}</h3>
-              {shownStep.description ? (
-                <p className="mt-1 whitespace-pre-wrap text-sm text-gray-500">
-                  {interpolate(shownStep.description, values, fieldsById)}
-                </p>
-              ) : null}
+            return (
+              <div
+                key={shownStepId}
+                style={{
+                  ...transitionStyle(shownStep.transition, phase),
+                  ...(hasBackground
+                    ? {
+                        backgroundImage: `url(${shownStep.imageUrl})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                      }
+                    : {}),
+                }}
+                className={`relative w-full max-w-md overflow-hidden rounded-2xl border border-[var(--vb-border)] bg-white shadow-sm ${
+                  hasBackground ? 'flex min-h-[420px] flex-col justify-end' : ''
+                }`}
+              >
+                {hasBanner ? (
+                  <img src={shownStep.imageUrl} alt="" className="h-40 w-full object-cover" />
+                ) : null}
+                {hasBackground ? (
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/5" />
+                ) : null}
 
-              <div className="mt-5 flex flex-col gap-4">
-                {shownStep.fields.map((field) => (
-                  <FieldRenderer
-                    key={field.id}
-                    field={field}
-                    value={values[field.id]}
-                    error={testMode ? errors[field.id] : undefined}
-                    onChange={(value) =>
-                      testMode
-                        ? handleFieldChange(shownStep, field.id, value)
-                        : undefined
-                    }
-                  />
-                ))}
+                <div className={`relative p-8 ${hasBackground ? 'z-10' : ''}`}>
+                  <h3
+                    className={`text-xl font-bold ${hasBackground ? 'text-white' : 'text-gray-900'}`}
+                  >
+                    {shownStep.title}
+                  </h3>
+                  {shownStep.description ? (
+                    <p
+                      className={`mt-1 whitespace-pre-wrap text-sm ${
+                        hasBackground ? 'text-white/85' : 'text-gray-500'
+                      }`}
+                    >
+                      {interpolate(shownStep.description, values, fieldsById)}
+                    </p>
+                  ) : null}
+
+                  <div className="mt-5 flex flex-col gap-4">
+                    {shownStep.fields.map((field) => (
+                      <FieldRenderer
+                        key={field.id}
+                        field={field}
+                        value={values[field.id]}
+                        error={testMode ? errors[field.id] : undefined}
+                        onChange={(value) =>
+                          testMode ? handleFieldChange(shownStep, field.id, value) : undefined
+                        }
+                      />
+                    ))}
+                  </div>
+
+                  {testMode && shownStep.validation.advanceTrigger === 'button' ? (
+                    <Button
+                      type="button"
+                      variant="primary"
+                      className="mt-6 w-full"
+                      onClick={() => handleNextClick(shownStep)}
+                    >
+                      {shownStep.validation.nextButtonLabel || 'Próximo'}
+                    </Button>
+                  ) : null}
+
+                  {!testMode ? (
+                    <p className="mt-5 rounded-lg bg-gray-50 px-3 py-2 text-center text-xs text-gray-400">
+                      Clique em "Testar fluxo" para preencher de verdade e ver o avanço entre
+                      etapas.
+                    </p>
+                  ) : null}
+                </div>
               </div>
-
-              {testMode && shownStep.validation.advanceTrigger === 'button' ? (
-                <Button
-                  type="button"
-                  variant="primary"
-                  className="mt-6 w-full"
-                  onClick={() => handleNextClick(shownStep)}
-                >
-                  {shownStep.validation.nextButtonLabel || 'Próximo'}
-                </Button>
-              ) : null}
-
-              {!testMode ? (
-                <p className="mt-5 rounded-lg bg-gray-50 px-3 py-2 text-center text-xs text-gray-400">
-                  Clique em "Testar fluxo" para preencher de verdade e ver o avanço entre etapas.
-                </p>
-              ) : null}
-            </div>
-          </div>
+            )
+          })()
         )}
       </div>
     </div>

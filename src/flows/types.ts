@@ -75,12 +75,17 @@ export type BranchRule = {
   goToStepId: string
 }
 
+/** "banner" = imagem no topo do card. "background" = imagem cobrindo a
+ * etapa inteira, com sobreposição escura pra manter o texto legível. */
+export type ImageMode = 'banner' | 'background'
+
 export type FlowStep = {
   id: string
   title: string
   description: string
-  /** URL de uma imagem/ilustração mostrada no topo da etapa. Opcional. */
+  /** URL de uma imagem/ilustração da etapa. Opcional. */
   imageUrl: string
+  imageMode: ImageMode
   fields: FormField[]
   validation: StepValidation
   transition: TransitionConfig
