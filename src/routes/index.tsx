@@ -9,10 +9,12 @@ import { GitHubConnectDialog } from '../components/GitHubConnectDialog'
 import type { GitHubPushStatus } from '../components/GitHubButton'
 import { GitHubApiError, saveFile, type GitHubSettings } from '../lib/github'
 import { loadGitHubSettings } from '../lib/githubSettings'
+import { formatFullDateTime } from '../lib/utils'
 
 export const Route = createFileRoute('/')({ component: Editor })
 
 const STORAGE_KEY = 'vb:puck-data'
+const LAST_SAVED_KEY = 'vb:last-saved-at'
 
 function loadStoredData(): Data<Props> | null {
   try {
@@ -23,10 +25,18 @@ function loadStoredData(): Data<Props> | null {
   }
 }
 
+function loadLastSavedAt(): Date | null {
+  const raw = window.localStorage.getItem(LAST_SAVED_KEY)
+  if (!raw) return null
+  const date = new Date(raw)
+  return Number.isNaN(date.getTime()) ? null : date
+}
+
 function Editor() {
   const [mounted, setMounted] = useState(false)
   const [data, setData] = useState<Data<Props>>(initialData)
   const [saved, setSaved] = useState(true)
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null)
   const dataRef = useRef(data)
   // O <Puck> só lê `data` na primeira renderização (estado interno próprio).
   // Trocar a `key` força ele a remontar do zero com o novo conteúdo — é o
@@ -44,6 +54,7 @@ function Editor() {
       setData(stored)
       dataRef.current = stored
     }
+    setLastSavedAt(loadLastSavedAt())
     setGithubSettings(loadGitHubSettings())
     setMounted(true)
   }, [])
@@ -52,6 +63,9 @@ function Editor() {
     dataRef.current = next
     setSaved(false)
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+    const now = new Date()
+    window.localStorage.setItem(LAST_SAVED_KEY, now.toISOString())
+    setLastSavedAt(now)
     setSaved(true)
   }, [])
 
@@ -67,7 +81,7 @@ function Editor() {
       await saveFile(
         githubSettings,
         JSON.stringify(dataRef.current, null, 2),
-        'Atualiza conteúdo via editor visual',
+        `Atualiza conteúdo via editor visual (${formatFullDateTime(new Date())})`,
       )
       setGithubStatus('success')
     } catch (e) {
@@ -99,6 +113,7 @@ function Editor() {
             <TopBar
               onDownload={handleDownload}
               saved={saved}
+              lastSavedAt={lastSavedAt}
               githubSettings={githubSettings}
               githubStatus={githubStatus}
               githubError={githubError}
@@ -117,6 +132,9 @@ function Editor() {
           dataRef.current = loaded
           setData(loaded)
           window.localStorage.setItem(STORAGE_KEY, JSON.stringify(loaded))
+          const now = new Date()
+          window.localStorage.setItem(LAST_SAVED_KEY, now.toISOString())
+          setLastSavedAt(now)
           setPuckKey((k) => k + 1)
         }}
       />

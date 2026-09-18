@@ -5,10 +5,12 @@ import { Button } from './ui/Button'
 import { AddBlockButton } from './AddBlockButton'
 import { GitHubButton, type GitHubPushStatus } from './GitHubButton'
 import type { GitHubSettings } from '../lib/github'
+import { formatFullDateTime, formatShortDateTime } from '../lib/utils'
 
 export function TopBar({
   onDownload,
   saved,
+  lastSavedAt,
   children,
   githubSettings,
   githubStatus,
@@ -18,6 +20,7 @@ export function TopBar({
 }: {
   onDownload: () => Promise<void> | void
   saved: boolean
+  lastSavedAt: Date | null
   children?: ReactNode
   githubSettings: GitHubSettings | null
   githubStatus: GitHubPushStatus
@@ -46,14 +49,16 @@ export function TopBar({
           <p className="truncate text-sm font-bold leading-tight text-[var(--vb-text)]">
             Editor Visual
           </p>
-          <p className="flex items-center gap-1 truncate text-[11px] leading-tight text-[var(--vb-text-muted)]">
-            {saved ? (
-              <>
-                <Check size={11} className="text-emerald-500" /> Salvo automaticamente
-              </>
-            ) : (
-              'Editando…'
-            )}
+          <p
+            className="flex items-center gap-1 truncate text-[11px] leading-tight text-[var(--vb-text-muted)]"
+            title={lastSavedAt ? `Última alteração: ${formatFullDateTime(lastSavedAt)}` : undefined}
+          >
+            {saved ? <Check size={11} className="shrink-0 text-emerald-500" /> : null}
+            {saved
+              ? lastSavedAt
+                ? `Salvo às ${formatShortDateTime(lastSavedAt)}`
+                : 'Salvo automaticamente'
+              : 'Editando…'}
           </p>
         </div>
       </div>
