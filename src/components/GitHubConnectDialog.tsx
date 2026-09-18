@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import type { Data } from '@puckeditor/core'
 import { Dialog } from './ui/Dialog'
 import { Input } from './ui/Input'
 import { Label } from './ui/Label'
@@ -11,7 +10,7 @@ import {
   emptyGitHubSettings,
   saveGitHubSettings,
 } from '../lib/githubSettings'
-import type { Props } from '../puck/config'
+import type { PuckData } from '../puck/config'
 
 export function GitHubConnectDialog({
   open,
@@ -24,7 +23,7 @@ export function GitHubConnectDialog({
   onClose: () => void
   current: GitHubSettings | null
   onChange: (settings: GitHubSettings | null) => void
-  onLoad: (data: Data<Props>) => void
+  onLoad: (data: PuckData) => void
 }) {
   const [form, setForm] = useState<GitHubSettings>(current ?? emptyGitHubSettings())
   const [showAdvanced, setShowAdvanced] = useState(false)
@@ -69,7 +68,7 @@ export function GitHubConnectDialog({
         setError('O arquivo ainda não existe nesse repositório/branch.')
         return
       }
-      onLoad(JSON.parse(file.content) as Data<Props>)
+      onLoad(JSON.parse(file.content) as PuckData)
       onClose()
     } catch (e) {
       setStatus('error')

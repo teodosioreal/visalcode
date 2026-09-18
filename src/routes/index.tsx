@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { Puck, type Data } from '@puckeditor/core'
-import { config, type Props } from '../puck/config'
+import { Puck } from '@puckeditor/core'
+import { config, type PuckData } from '../puck/config'
 import { initialData } from '../data/initial-data'
 import { exportProjectZip } from '../lib/exportZip'
 import { TopBar } from '../components/TopBar'
@@ -14,27 +14,36 @@ import { formatFullDateTime } from '../lib/utils'
 export const Route = createFileRoute('/')({ component: Editor })
 
 const STORAGE_KEY = 'vb:puck-data'
-const LAST_SAVED_KEY = 'vb:last-saved-at'
 
-function loadStoredData(): Data<Props> | null {
+function loadStoredData(): PuckData | null {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY)
-    return raw ? (JSON.parse(raw) as Data<Props>) : null
+    return raw ? (JSON.parse(raw) as PuckData) : null
   } catch {
     return null
   }
 }
 
-function loadLastSavedAt(): Date | null {
-  const raw = window.localStorage.getItem(LAST_SAVED_KEY)
-  if (!raw) return null
-  const date = new Date(raw)
+function parseUpdatedAt(data: PuckData): Date | null {
+  const iso = data.root?.props?.updatedAt
+  if (!iso) return null
+  const date = new Date(iso)
   return Number.isNaN(date.getTime()) ? null : date
+}
+
+/** Grava a hora da edição dentro do próprio conteúdo (root.props.updatedAt),
+ * em vez de num lugar separado — assim ela vai junto pro .zip, pro GitHub e
+ * aparece igual em qualquer navegador/dispositivo que abrir esse conteúdo. */
+function stampUpdatedAt(data: PuckData): PuckData {
+  return {
+    ...data,
+    root: { ...data.root, props: { ...data.root.props, updatedAt: new Date().toISOString() } },
+  }
 }
 
 function Editor() {
   const [mounted, setMounted] = useState(false)
-  const [data, setData] = useState<Data<Props>>(initialData)
+  const [data, setData] = useState<PuckData>(initialData)
   const [saved, setSaved] = useState(true)
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null)
   const dataRef = useRef(data)
@@ -53,19 +62,20 @@ function Editor() {
     if (stored) {
       setData(stored)
       dataRef.current = stored
+      setLastSavedAt(parseUpdatedAt(stored))
+    } else {
+      setLastSavedAt(parseUpdatedAt(initialData))
     }
-    setLastSavedAt(loadLastSavedAt())
     setGithubSettings(loadGitHubSettings())
     setMounted(true)
   }, [])
 
-  const handleChange = useCallback((next: Data<Props>) => {
-    dataRef.current = next
+  const handleChange = useCallback((next: PuckData) => {
+    const stamped = stampUpdatedAt(next)
+    dataRef.current = stamped
     setSaved(false)
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
-    const now = new Date()
-    window.localStorage.setItem(LAST_SAVED_KEY, now.toISOString())
-    setLastSavedAt(now)
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(stamped))
+    setLastSavedAt(parseUpdatedAt(stamped))
     setSaved(true)
   }, [])
 
@@ -132,9 +142,7 @@ function Editor() {
           dataRef.current = loaded
           setData(loaded)
           window.localStorage.setItem(STORAGE_KEY, JSON.stringify(loaded))
-          const now = new Date()
-          window.localStorage.setItem(LAST_SAVED_KEY, now.toISOString())
-          setLastSavedAt(now)
+          setLastSavedAt(parseUpdatedAt(loaded))
           setPuckKey((k) => k + 1)
         }}
       />

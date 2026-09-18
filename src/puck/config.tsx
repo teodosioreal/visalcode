@@ -1,4 +1,4 @@
-import type { Config } from '@puckeditor/core'
+import type { Config, Data } from '@puckeditor/core'
 import { Header, type HeaderProps } from './blocks/Header'
 import { Banner, type BannerProps } from './blocks/Banner'
 import { PricingTable, type PricingTableProps } from './blocks/PricingTable'
@@ -23,7 +23,16 @@ export type Props = {
   Container: ContainerProps
 }
 
-export const config: Config<Props> = {
+export type RootProps = {
+  title?: string
+  /** ISO da última edição salva — não é um campo editável, é só metadado. */
+  updatedAt?: string
+}
+
+/** Tipo do estado completo do editor, usado em toda a app (dados salvos, exportados, etc). */
+export type PuckData = Data<Props, RootProps>
+
+export const config: Config<Props, RootProps> = {
   categories: {
     estrutura: {
       title: 'Estrutura da página',

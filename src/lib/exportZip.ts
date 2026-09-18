@@ -1,7 +1,6 @@
 import JSZip from 'jszip'
 import fileSaver from 'file-saver'
-import type { Data } from '@puckeditor/core'
-import type { Props } from '../puck/config'
+import type { PuckData } from '../puck/config'
 import { sourceFiles } from './sourceManifest'
 // import.meta.glob nunca inclui o arquivo onde ele é declarado (sourceManifest.ts),
 // então seu conteúdo é lido aqui, de fora, via import ?raw comum.
@@ -12,7 +11,7 @@ const { saveAs } = fileSaver
 const DATA_FILE_PATH = '/src/data/initial-data.json'
 const MANIFEST_FILE_PATH = 'src/lib/sourceManifest.ts'
 
-export async function exportProjectZip(currentData: Data<Props>) {
+export async function exportProjectZip(currentData: PuckData) {
   const zip = new JSZip()
   zip.file(MANIFEST_FILE_PATH, sourceManifestOwnSource)
 
