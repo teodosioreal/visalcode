@@ -79,6 +79,24 @@ export type BranchRule = {
  * etapa inteira, com sobreposição escura pra manter o texto legível. */
 export type ImageMode = 'banner' | 'background'
 
+/** Barrinha de "carregando/processando" mostrada ao sair desta etapa,
+ * antes de revelar a próxima — dá a impressão de que algo foi analisado. */
+export type LoadingConfig = {
+  enabled: boolean
+  message: string
+  durationMs: number
+}
+
+/** Link de saída do funil (ex: WhatsApp, checkout, agendamento). Quando
+ * ativado, o botão desta etapa leva pra essa URL em vez de avançar pra
+ * outra etapa — é o ponto final de verdade do fluxo. */
+export type FinalLinkConfig = {
+  enabled: boolean
+  url: string
+  label: string
+  openInNewTab: boolean
+}
+
 export type FlowStep = {
   id: string
   title: string
@@ -86,6 +104,8 @@ export type FlowStep = {
   /** URL de uma imagem/ilustração da etapa. Opcional. */
   imageUrl: string
   imageMode: ImageMode
+  loading: LoadingConfig
+  finalLink: FinalLinkConfig
   fields: FormField[]
   validation: StepValidation
   transition: TransitionConfig

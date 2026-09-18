@@ -1,10 +1,15 @@
 import { Input, Textarea } from '../components/ui/Input'
 import { Label } from '../components/ui/Label'
 import { TransitionSection } from './panels/TransitionSection'
+import { LoadingSection } from './panels/LoadingSection'
 import { ValidationSection } from './panels/ValidationSection'
 import { FieldsSection } from './panels/FieldsSection'
 import { BranchingSection } from './panels/BranchingSection'
+import { FinalLinkSection } from './panels/FinalLinkSection'
 import type { FlowStep } from './types'
+
+const DEFAULT_LOADING = { enabled: false, message: 'Analisando suas respostas...', durationMs: 900 }
+const DEFAULT_FINAL_LINK = { enabled: false, url: '', label: 'Continuar', openInNewTab: true }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -95,6 +100,13 @@ export function StepPropertiesPanel({
         />
       </Section>
 
+      <Section title="Carregamento entre etapas">
+        <LoadingSection
+          value={step.loading ?? DEFAULT_LOADING}
+          onChange={(loading) => onChange({ loading })}
+        />
+      </Section>
+
       <Section title="Regras e validação">
         <ValidationSection
           value={step.validation}
@@ -108,6 +120,13 @@ export function StepPropertiesPanel({
 
       <Section title="Ramificação (branching)">
         <BranchingSection step={step} allSteps={allSteps} onChange={onChange} />
+      </Section>
+
+      <Section title="Link final (fim do fluxo)">
+        <FinalLinkSection
+          value={step.finalLink ?? DEFAULT_FINAL_LINK}
+          onChange={(finalLink) => onChange({ finalLink })}
+        />
       </Section>
     </div>
   )

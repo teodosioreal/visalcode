@@ -76,9 +76,12 @@ da tela.
 - **Painel esquerdo**: lista de etapas — adicionar, duplicar, reordenar,
   excluir e marcar qual é a etapa inicial (ícone ▶).
 - **Centro (pré-visualização ao vivo)**: mostra a etapa selecionada com a
-  aparência real. Clique em **"Testar fluxo"** pra preencher de verdade e
-  ver a transição, a validação e o avanço entre etapas acontecendo (depois,
-  **"Sair do teste"** volta a mostrar a etapa que você está editando).
+  aparência real. Um alternador **desktop/celular** no topo mostra a mesma
+  etapa dentro de uma moldura de celular, pra ver como fica numa tela
+  pequena. Clique em **"Testar fluxo"** pra preencher de verdade e ver a
+  transição, o carregamento entre etapas, a validação e o avanço
+  acontecendo (depois, **"Sair do teste"** volta a mostrar a etapa que
+  você está editando).
 - **Painel direito**, por etapa selecionada:
   - **Etapa**: título, descrição e uma imagem opcional (URL), que pode
     aparecer como **banner no topo do card** ou como **fundo cobrindo a
@@ -90,6 +93,10 @@ da tela.
   - **Efeito e tempo de transição**: tipo de animação (fade, deslizar,
     zoom, step-up...), duração em ms, delay e curva de easing (inclusive
     `cubic-bezier` personalizado).
+  - **Carregamento entre etapas**: liga uma barrinha de "processando" (com
+    spinner e mensagem customizável, ex: "Montando seu diagnóstico...")
+    mostrada por alguns segundos ao sair desta etapa, antes de revelar a
+    próxima — dá a impressão de que a resposta foi analisada.
   - **Regras e validação**: se a etapa é obrigatória, se avança sozinha
     (ao preencher/selecionar) ou só com clique no botão de avançar, e o
     texto desse botão (ex: "Quero minha avaliação").
@@ -100,6 +107,10 @@ da tela.
   - **Ramificação (branching)**: regras "se a resposta de tal campo for
     X, vá para a etapa Y", mais uma etapa padrão de destino quando nenhuma
     regra bate.
+  - **Link final (fim do fluxo)**: transforma o botão desta etapa num link
+    de saída de verdade (ex: `https://wa.me/55...`, um checkout, uma página
+    de agendamento) em vez de avançar pra outra etapa — o ponto final real
+    do funil, com texto do botão customizável e opção de abrir em nova aba.
 - **"Ver JSON"**: mostra o arquivo de configuração por trás do editor
   visual — dá pra editar o JSON diretamente ali e clicar em "Aplicar" pra
   atualizar o fluxo (sincronização nos dois sentidos: editar no formulário

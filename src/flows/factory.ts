@@ -68,6 +68,8 @@ export function newStep(title = 'Nova etapa'): FlowStep {
     description: '',
     imageUrl: '',
     imageMode: 'banner',
+    loading: { enabled: false, message: 'Analisando suas respostas...', durationMs: 900 },
+    finalLink: { enabled: false, url: '', label: 'Continuar', openInNewTab: true },
     fields: [defaultField()],
     validation: { required: true, advanceTrigger: 'button', nextButtonLabel: 'Próximo' },
     transition: defaultTransition(),

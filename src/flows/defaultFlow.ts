@@ -26,6 +26,8 @@ export const defaultFlow: FlowConfig = {
       description: 'Ajuda a entender melhor o seu perfil.',
       imageUrl: '',
       imageMode: 'banner',
+      loading: { enabled: false, message: 'Analisando suas respostas...', durationMs: 900 },
+      finalLink: { enabled: false, url: '', label: 'Continuar', openInNewTab: true },
       fields: [
         {
           id: 'tattoo',
@@ -54,6 +56,8 @@ export const defaultFlow: FlowConfig = {
       description: 'Informação opcional, mas ajuda no seu diagnóstico.',
       imageUrl: '',
       imageMode: 'banner',
+      loading: { enabled: false, message: 'Analisando suas respostas...', durationMs: 900 },
+      finalLink: { enabled: false, url: '', label: 'Continuar', openInNewTab: true },
       fields: [
         {
           id: 'nails',
@@ -82,6 +86,8 @@ export const defaultFlow: FlowConfig = {
       description: '',
       imageUrl: '',
       imageMode: 'banner',
+      loading: { enabled: false, message: 'Analisando suas respostas...', durationMs: 900 },
+      finalLink: { enabled: false, url: '', label: 'Continuar', openInNewTab: true },
       fields: [
         {
           id: 'shape',
@@ -110,6 +116,8 @@ export const defaultFlow: FlowConfig = {
       description: 'Compradores costumam filtrar por tamanho.',
       imageUrl: '',
       imageMode: 'banner',
+      loading: { enabled: false, message: 'Analisando suas respostas...', durationMs: 900 },
+      finalLink: { enabled: false, url: '', label: 'Continuar', openInNewTab: true },
       fields: [
         {
           id: 'size',
@@ -138,6 +146,8 @@ export const defaultFlow: FlowConfig = {
       description: '',
       imageUrl: '',
       imageMode: 'banner',
+      loading: { enabled: true, message: 'Montando seu diagnóstico...', durationMs: 1200 },
+      finalLink: { enabled: false, url: '', label: 'Continuar', openInNewTab: true },
       fields: [
         {
           id: 'care',
@@ -171,6 +181,8 @@ export const defaultFlow: FlowConfig = {
         'Com base no que você nos contou — tatuagem: {{tattoo}}, unhas: {{nails}}, formato dos dedos: {{shape}}, tamanho do pé: {{size}} e cuidados: {{care}} — o seu perfil tem tudo pra se destacar. Deixe seu contato abaixo que a gente te chama com os próximos passos.',
       imageUrl: '',
       imageMode: 'banner',
+      loading: { enabled: false, message: 'Analisando suas respostas...', durationMs: 900 },
+      finalLink: { enabled: false, url: '', label: 'Continuar', openInNewTab: true },
       fields: [
         {
           id: 'lead-nome',
