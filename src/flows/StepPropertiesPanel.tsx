@@ -31,11 +31,13 @@ export function StepPropertiesPanel({
   allSteps,
   onChange,
   onApply,
+  onApplyTransitionToAll,
 }: {
   step: FlowStep
   allSteps: FlowStep[]
   onChange: (patch: Partial<FlowStep>) => void
   onApply: () => void
+  onApplyTransitionToAll: (transition: FlowStep['transition']) => void
 }) {
   const [applied, setApplied] = useState(false)
   const appliedTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -132,6 +134,9 @@ export function StepPropertiesPanel({
         <TransitionSection
           value={step.transition}
           onChange={(transition) => onChange({ transition })}
+          onApplyToAll={
+            allSteps.length > 1 ? () => onApplyTransitionToAll(step.transition) : undefined
+          }
         />
       </Section>
 

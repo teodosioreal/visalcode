@@ -98,9 +98,16 @@ da tela.
     pra citar a resposta dada numa etapa anterior — útil pra montar uma
     etapa final de "diagnóstico" que resume o que a pessoa preencheu antes
     de pedir o contato dela.
-  - **Efeito e tempo de transição**: tipo de animação (fade, deslizar,
-    zoom, step-up...), duração em ms, delay e curva de easing (inclusive
-    `cubic-bezier` personalizado).
+  - **Efeito e tempo de transição**: **modelos prontos** (Suave, Rápido e
+    direto, Deslizar, Subir suave, Dramático, Quicar, Virar, Desfoque,
+    Nenhum) pra aplicar tudo de uma vez, mais um preview em miniatura com
+    botão **"Ver efeito"** pra conferir a animação sem precisar testar o
+    fluxo inteiro. Doze tipos de animação (fade, deslizar em qualquer
+    direção, zoom, subir um degrau, virar em 3D, desfoque, quicar elástico,
+    girar...), duração em ms, delay e curva de easing (inclusive
+    `cubic-bezier` personalizado). O link **"Usar essa transição em todas
+    as etapas"** copia a configuração atual pra todas as outras etapas do
+    fluxo de uma vez.
   - **Carregamento entre etapas**: liga uma barrinha de "processando" (com
     spinner e mensagem customizável, ex: "Montando seu diagnóstico...")
     mostrada por alguns segundos ao sair desta etapa, antes de revelar a

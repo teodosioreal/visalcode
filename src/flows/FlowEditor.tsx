@@ -141,6 +141,10 @@ export function FlowEditor() {
     persist({ ...flow, startStepId: id })
   }
 
+  function handleApplyTransitionToAll(transition: FlowStep['transition']) {
+    persist({ ...flow, steps: flow.steps.map((s) => ({ ...s, transition })) })
+  }
+
   async function handleImport(file: File) {
     const lowerName = file.name.toLowerCase()
 
@@ -249,6 +253,7 @@ export function FlowEditor() {
             allSteps={flow.steps}
             onChange={updateSelectedStep}
             onApply={() => persist(flowRef.current)}
+            onApplyTransitionToAll={handleApplyTransitionToAll}
           />
         </div>
       </div>

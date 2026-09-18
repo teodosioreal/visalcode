@@ -120,6 +120,8 @@ export function FlowPreview({
 
   const hasBackground =
     !!shownStep.imageUrl && (shownStep.imageMode ?? 'banner') === 'background'
+  const showingTransientCard = testMode && (!!loadingMessage || finished)
+  const fullBleed = hasBackground && !showingTransientCard
 
   let cardNode: ReactNode
 
@@ -173,7 +175,7 @@ export function FlowPreview({
         }}
         className={
           hasBackground
-            ? 'relative flex h-full w-full flex-col justify-end overflow-hidden'
+            ? 'relative flex h-full w-full flex-col justify-end overflow-y-auto overflow-x-hidden'
             : 'relative w-full max-w-md overflow-hidden rounded-2xl border border-[var(--vb-border)] bg-white shadow-sm'
         }
       >
@@ -301,11 +303,11 @@ export function FlowPreview({
 
       <div
         className={`flex flex-1 overflow-y-auto bg-[var(--vb-bg)] ${
-          hasBackground ? '' : 'items-center justify-center p-6'
+          fullBleed ? '' : 'items-center justify-center p-6'
         }`}
       >
         {viewport === 'mobile' ? (
-          <PhoneFrame fullBleed={hasBackground}>{cardNode}</PhoneFrame>
+          <PhoneFrame fullBleed={fullBleed}>{cardNode}</PhoneFrame>
         ) : (
           cardNode
         )}

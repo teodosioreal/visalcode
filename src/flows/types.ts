@@ -3,8 +3,13 @@ export type TransitionType =
   | 'slide-left'
   | 'slide-right'
   | 'slide-up'
+  | 'slide-down'
   | 'step-up'
   | 'zoom'
+  | 'flip'
+  | 'blur'
+  | 'bounce'
+  | 'rotate'
   | 'none'
 
 export type Easing = 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'cubic-bezier'
