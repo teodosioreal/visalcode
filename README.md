@@ -1,8 +1,11 @@
 # Editor Visual (Visual Builder)
 
-Editor visual arrasta-e-solta para montar páginas sem escrever código, com
-exportação do projeto em `.zip` para sincronizar com o GitHub. Não depende
-de nenhuma API de IA — tudo roda localmente no navegador.
+Duas ferramentas num só app, sem depender de nenhuma API de IA — tudo roda
+localmente no navegador:
+
+- **aba "Páginas"**: editor visual arrasta-e-solta para montar páginas.
+- **aba "Fluxos"**: editor de formulários com etapas sequenciais
+  (transições, validação e ramificação condicional).
 
 Stack: **TanStack Start + React 19 + Tailwind CSS 4 + Puck** (`@puckeditor/core`).
 
@@ -64,6 +67,40 @@ Essa conexão salva só o **conteúdo da página** (o que muda quando você
 edita visualmente). Para levar todo o código-fonte do projeto pra um
 repositório novo pela primeira vez, use o **"Baixar Projeto (.zip)"**.
 
+## Editor de Fluxos (`/flows`)
+
+Configura formulários com etapas sequenciais que avançam conforme o
+preenchimento — tipo um Typeform próprio. Fica na aba **"Fluxos"**, no topo
+da tela.
+
+- **Painel esquerdo**: lista de etapas — adicionar, duplicar, reordenar,
+  excluir e marcar qual é a etapa inicial (ícone ▶).
+- **Centro (pré-visualização ao vivo)**: mostra a etapa selecionada com a
+  aparência real. Clique em **"Testar fluxo"** pra preencher de verdade e
+  ver a transição, a validação e o avanço entre etapas acontecendo (depois,
+  **"Sair do teste"** volta a mostrar a etapa que você está editando).
+- **Painel direito**, por etapa selecionada:
+  - **Efeito e tempo de transição**: tipo de animação (fade, deslizar,
+    zoom, step-up...), duração em ms, delay e curva de easing (inclusive
+    `cubic-bezier` personalizado).
+  - **Regras e validação**: se a etapa é obrigatória e se avança sozinha
+    (ao preencher/selecionar) ou só com clique em "Próximo".
+  - **Campos**: adicionar campos (texto, e-mail, número, seleção
+    única/múltipla, upload, data...), com rótulo, obrigatoriedade, mensagem
+    de erro customizada e regras de validação (tamanho mín/máx, valor
+    mín/máx, opções da seleção).
+  - **Ramificação (branching)**: regras "se a resposta de tal campo for
+    X, vá para a etapa Y", mais uma etapa padrão de destino quando nenhuma
+    regra bate.
+- **"Ver JSON"**: mostra o arquivo de configuração por trás do editor
+  visual — dá pra editar o JSON diretamente ali e clicar em "Aplicar" pra
+  atualizar o fluxo (sincronização nos dois sentidos: editar no formulário
+  visual atualiza o JSON, e editar o JSON atualiza o formulário visual).
+- **"Importar"** carrega um arquivo `.json` de fluxo existente;
+  **"Baixar .json"** exporta o fluxo atual pra usar/versionar em outro lugar.
+- Assim como na aba Páginas, fica salvo automaticamente no navegador com
+  data/hora da última alteração.
+
 ## Sobre a "Galeria Protegida"
 
 A senha da Galeria Protegida é um recurso simples para uso pessoal (ocultar
@@ -75,13 +112,17 @@ para proteger conteúdo sensível.
 
 ```
 src/
-  components/       Topo do editor, botão de baixar/adicionar bloco, tema
-  components/ui/     Peças de UI reutilizáveis (Button, Card, Input)
+  components/        Topo do editor de páginas, abas de navegação, tema
+  components/ui/     Peças de UI reutilizáveis (Button, Card, Input, Select, Switch, Dialog)
   puck/config.tsx     Configuração do Puck: lista de blocos disponíveis
   puck/blocks/        Cada bloco arrastável (Header, Banner, etc.)
   puck/fields/        Campos customizados do painel de propriedades (cor, espaçamento)
   data/initial-data.json  Conteúdo atual da página (sobrescrito ao baixar o .zip)
-  routes/index.tsx    Página única: o editor
+  flows/types.ts       Tipos do modelo de fluxo (FlowConfig, FlowStep, TransitionConfig...)
+  flows/FlowEditor.tsx Editor de fluxos: junta lista de etapas, preview e propriedades
+  flows/panels/        Seções do painel de propriedades (transição, validação, campos, branching)
+  routes/index.tsx    Aba "Páginas"
+  routes/flows.tsx    Aba "Fluxos"
 ```
 
 ## Publicando as mudanças no GitHub

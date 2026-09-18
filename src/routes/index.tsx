@@ -104,7 +104,7 @@ function Editor() {
 
   if (!mounted) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[var(--vb-bg)] text-sm text-[var(--vb-text-muted)]">
+      <div className="flex h-full items-center justify-center bg-[var(--vb-bg)] text-sm text-[var(--vb-text-muted)]">
         Carregando editor visual…
       </div>
     )
@@ -118,6 +118,7 @@ function Editor() {
         data={data}
         onChange={handleChange}
         iframe={{ enabled: false }}
+        height="100%"
         overrides={{
           header: () => (
             <TopBar

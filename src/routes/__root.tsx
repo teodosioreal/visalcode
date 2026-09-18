@@ -1,6 +1,7 @@
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
+import { AppTabs } from '../components/AppTabs'
 
 import appCss from '../styles.css?url'
 import puckCss from '@puckeditor/core/puck.css?url'
@@ -42,8 +43,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
       </head>
-      <body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(37,99,235,0.24)]">
-        {children}
+      <body className="flex h-screen flex-col overflow-hidden font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(37,99,235,0.24)]">
+        <AppTabs />
+        <div className="min-h-0 flex-1">{children}</div>
         <TanStackDevtools
           config={{
             position: 'bottom-right',
