@@ -83,8 +83,11 @@ da tela.
   acontecendo (depois, **"Sair do teste"** volta a mostrar a etapa que
   você está editando).
 - **Painel direito**, por etapa selecionada:
-  - **Etapa**: título, descrição e uma imagem opcional (URL), que pode
-    aparecer como **banner no topo do card** ou como **fundo cobrindo a
+  - **Etapa**: título, descrição e uma imagem opcional — cole uma URL ou
+    clique em **"Enviar"** pra escolher uma foto do computador/celular
+    (ela é redimensionada automaticamente e guardada dentro do próprio
+    fluxo, sem precisar de link externo nem de servidor pra hospedar).
+    Pode aparecer como **banner no topo do card** ou como **fundo cobrindo a
     etapa inteira** (com uma sobreposição escura automática pra manter o
     texto legível em cima da foto). A descrição aceita `{{id-do-campo}}`
     pra citar a resposta dada numa etapa anterior — útil pra montar uma

@@ -1,4 +1,5 @@
 import { Input, Textarea } from '../components/ui/Input'
+import { ImageField } from '../components/ui/ImageField'
 import { Label } from '../components/ui/Label'
 import { TransitionSection } from './panels/TransitionSection'
 import { LoadingSection } from './panels/LoadingSection'
@@ -56,11 +57,10 @@ export function StepPropertiesPanel({
           </div>
           <div>
             <Label htmlFor="step-image">Imagem da etapa (opcional)</Label>
-            <Input
+            <ImageField
               id="step-image"
-              placeholder="https://..."
               value={step.imageUrl}
-              onChange={(e) => onChange({ imageUrl: e.target.value })}
+              onChange={(imageUrl) => onChange({ imageUrl })}
             />
           </div>
           {step.imageUrl ? (
