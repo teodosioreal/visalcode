@@ -82,7 +82,10 @@ da tela.
   transição, o carregamento entre etapas, a validação e o avanço
   acontecendo (depois, **"Sair do teste"** volta a mostrar a etapa que
   você está editando).
-- **Painel direito**, por etapa selecionada:
+- **Painel direito**, por etapa selecionada. No topo dele fica o botão
+  **"Aplicar alterações"** — toda edição já é salva sozinha (localStorage),
+  mas clicar nele confirma na hora, atualizando o horário de "Salvo às..."
+  no topo da tela.
   - **Etapa**: título, descrição e uma imagem opcional — cole uma URL ou
     clique em **"Enviar"** pra escolher uma foto do computador/celular
     (ela é redimensionada automaticamente e guardada dentro do próprio
@@ -108,7 +111,11 @@ da tela.
   - **Campos**: adicionar campos (texto, e-mail, número, seleção
     única/múltipla, upload, data...), com rótulo, obrigatoriedade, mensagem
     de erro customizada e regras de validação (tamanho mín/máx, valor
-    mín/máx, opções da seleção).
+    mín/máx, opções da seleção). Tem também o tipo **"Aceite
+    (privacidade/termos)"** — um checkbox de "Li e aceito..." com até dois
+    links customizáveis (texto + URL), pra apontar pra sua Política de
+    Privacidade e Termos de Uso; funciona como qualquer outro campo
+    obrigatório (bloqueia o avanço se não for marcado).
   - **Ramificação (branching)**: regras "se a resposta de tal campo for
     X, vá para a etapa Y", mais uma etapa padrão de destino quando nenhuma
     regra bate.

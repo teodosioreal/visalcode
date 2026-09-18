@@ -30,6 +30,9 @@ export type FieldType =
   | 'single-select'
   | 'multi-select'
   | 'file'
+  /** Checkbox de aceite com links pra política de privacidade/termos de uso
+   * (guardados em `options`, dois itens: {label, value=URL} cada). */
+  | 'consent'
 
 export type FieldOption = { id: string; label: string; value: string }
 

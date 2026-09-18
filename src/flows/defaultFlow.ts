@@ -204,6 +204,19 @@ export const defaultFlow: FlowConfig = {
           options: [],
           validation: {},
         },
+        {
+          id: 'lead-consentimento',
+          type: 'consent',
+          label: 'Li e aceito a',
+          placeholder: '',
+          required: true,
+          errorMessage: 'Você precisa aceitar para continuar.',
+          options: [
+            { id: 'opt-consent-privacidade', label: 'Política de Privacidade', value: '' },
+            { id: 'opt-consent-termos', label: 'Termos de Uso', value: '' },
+          ],
+          validation: {},
+        },
       ],
       validation: {
         required: true,

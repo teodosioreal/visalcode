@@ -6,7 +6,7 @@ import { Label } from '../../components/ui/Label'
 import { Select } from '../../components/ui/Select'
 import { Switch } from '../../components/ui/Switch'
 import { cn } from '../../lib/utils'
-import { defaultField, defaultFieldOption, newId, slug } from '../factory'
+import { defaultConsentLinks, defaultField, defaultFieldOption, newId, slug } from '../factory'
 import type { FieldType, FormField } from '../types'
 
 const TYPE_OPTIONS: Array<{ value: FieldType; label: string }> = [
@@ -19,11 +19,13 @@ const TYPE_OPTIONS: Array<{ value: FieldType; label: string }> = [
   { value: 'single-select', label: 'Seleção única' },
   { value: 'multi-select', label: 'Múltipla seleção' },
   { value: 'file', label: 'Upload de arquivo' },
+  { value: 'consent', label: 'Aceite (privacidade/termos)' },
 ]
 
 const hasOptions = (type: FieldType) => type === 'single-select' || type === 'multi-select'
 const isNumeric = (type: FieldType) => type === 'number'
 const isTextLike = (type: FieldType) => type === 'text' || type === 'textarea'
+const hasPlaceholder = (type: FieldType) => type !== 'consent' && type !== 'file'
 
 export function FieldsSection({
   fields,
@@ -100,11 +102,16 @@ export function FieldsSection({
                           const type = e.target.value as FieldType
                           updateField(field.id, {
                             type,
-                            options: hasOptions(type)
-                              ? field.options.length
-                                ? field.options
-                                : [defaultFieldOption()]
-                              : [],
+                            options:
+                              type === 'consent'
+                                ? field.options.length === 2
+                                  ? field.options
+                                  : defaultConsentLinks()
+                                : hasOptions(type)
+                                  ? field.options.length
+                                    ? field.options
+                                    : [defaultFieldOption()]
+                                  : [],
                           })
                         }}
                       >
@@ -125,20 +132,23 @@ export function FieldsSection({
                   </div>
 
                   <div>
-                    <Label>Rótulo (label)</Label>
+                    <Label>{field.type === 'consent' ? 'Texto antes dos links' : 'Rótulo (label)'}</Label>
                     <Input
                       value={field.label}
+                      placeholder={field.type === 'consent' ? 'Li e aceito a' : undefined}
                       onChange={(e) => updateField(field.id, { label: e.target.value })}
                     />
                   </div>
 
-                  <div>
-                    <Label>Texto de exemplo (placeholder)</Label>
-                    <Input
-                      value={field.placeholder}
-                      onChange={(e) => updateField(field.id, { placeholder: e.target.value })}
-                    />
-                  </div>
+                  {hasPlaceholder(field.type) ? (
+                    <div>
+                      <Label>Texto de exemplo (placeholder)</Label>
+                      <Input
+                        value={field.placeholder}
+                        onChange={(e) => updateField(field.id, { placeholder: e.target.value })}
+                      />
+                    </div>
+                  ) : null}
 
                   <div>
                     <Label>Mensagem de erro</Label>
@@ -148,7 +158,12 @@ export function FieldsSection({
                     />
                   </div>
 
-                  {hasOptions(field.type) ? (
+                  {field.type === 'consent' ? (
+                    <LinksEditor
+                      field={field}
+                      onChange={(options) => updateField(field.id, { options })}
+                    />
+                  ) : hasOptions(field.type) ? (
                     <OptionsEditor
                       field={field}
                       onChange={(options) => updateField(field.id, { options })}
@@ -296,6 +311,58 @@ function OptionsEditor({
         className="mt-1.5 text-xs font-semibold text-[var(--vb-accent)] hover:underline"
       >
         + adicionar opção
+      </button>
+    </div>
+  )
+}
+
+function LinksEditor({
+  field,
+  onChange,
+}: {
+  field: FormField
+  onChange: (options: FormField['options']) => void
+}) {
+  return (
+    <div>
+      <Label>Links (política de privacidade, termos de uso...)</Label>
+      <div className="flex flex-col gap-1.5">
+        {field.options.map((opt, i) => (
+          <div key={opt.id} className="flex items-center gap-1.5">
+            <Input
+              value={opt.label}
+              placeholder="Texto do link (ex: Termos de Uso)"
+              onChange={(e) => {
+                const next = [...field.options]
+                next[i] = { ...opt, label: e.target.value }
+                onChange(next)
+              }}
+            />
+            <Input
+              value={opt.value}
+              placeholder="https://..."
+              onChange={(e) => {
+                const next = [...field.options]
+                next[i] = { ...opt, value: e.target.value }
+                onChange(next)
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => onChange(field.options.filter((_, oi) => oi !== i))}
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[var(--vb-text-muted)] hover:text-red-500"
+            >
+              <Trash2 size={13} />
+            </button>
+          </div>
+        ))}
+      </div>
+      <button
+        type="button"
+        onClick={() => onChange([...field.options, { id: newId('opt'), label: '', value: '' }])}
+        className="mt-1.5 text-xs font-semibold text-[var(--vb-accent)] hover:underline"
+      >
+        + adicionar link
       </button>
     </div>
   )

@@ -248,6 +248,7 @@ export function FlowEditor() {
             step={selectedStep}
             allSteps={flow.steps}
             onChange={updateSelectedStep}
+            onApply={() => persist(flowRef.current)}
           />
         </div>
       </div>

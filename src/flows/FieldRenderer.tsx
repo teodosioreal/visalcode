@@ -13,6 +13,46 @@ export function FieldRenderer({
   error?: string
   onChange: (value: FieldValue) => void
 }) {
+  if (field.type === 'consent') {
+    const checked = value === 'true'
+    return (
+      <div className="flex flex-col gap-1.5">
+        <label className="flex cursor-pointer items-start gap-2 text-sm text-gray-700">
+          <input
+            type="checkbox"
+            checked={checked}
+            onChange={(e) => onChange(e.target.checked ? 'true' : '')}
+            className="mt-0.5 h-4 w-4 shrink-0 accent-blue-600"
+          />
+          <span>
+            {field.label}
+            {field.label ? ' ' : ''}
+            {field.options.map((opt, i) => (
+              <span key={opt.id}>
+                {i > 0 ? ' e ' : ''}
+                {opt.value ? (
+                  <a
+                    href={opt.value}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="font-semibold text-blue-600 underline hover:text-blue-700"
+                  >
+                    {opt.label || 'link'}
+                  </a>
+                ) : (
+                  <span className="font-semibold">{opt.label || 'link'}</span>
+                )}
+              </span>
+            ))}
+            {field.options.length ? '.' : ''}
+          </span>
+        </label>
+        {error ? <p className="text-xs text-red-600">{error}</p> : null}
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-1.5">
       <label className="text-sm font-semibold text-gray-800">

@@ -38,15 +38,30 @@ export function defaultFieldOption(): FieldOption {
   return { id: newId('opt'), label: 'Opção', value: 'opcao' }
 }
 
+export function defaultConsentLinks(): FieldOption[] {
+  return [
+    { id: newId('opt'), label: 'Política de Privacidade', value: '' },
+    { id: newId('opt'), label: 'Termos de Uso', value: '' },
+  ]
+}
+
 export function defaultField(type: FieldType = 'text'): FormField {
   return {
     id: newId('field'),
     type,
-    label: 'Novo campo',
+    label: type === 'consent' ? 'Li e aceito a' : 'Novo campo',
     placeholder: '',
     required: true,
-    errorMessage: 'Preencha este campo para continuar.',
-    options: type === 'single-select' || type === 'multi-select' ? [defaultFieldOption()] : [],
+    errorMessage:
+      type === 'consent'
+        ? 'Você precisa aceitar para continuar.'
+        : 'Preencha este campo para continuar.',
+    options:
+      type === 'single-select' || type === 'multi-select'
+        ? [defaultFieldOption()]
+        : type === 'consent'
+          ? defaultConsentLinks()
+          : [],
     validation: {},
   }
 }

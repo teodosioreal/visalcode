@@ -1,6 +1,9 @@
+import { useEffect, useRef, useState } from 'react'
+import { Check } from 'lucide-react'
 import { Input, Textarea } from '../components/ui/Input'
 import { ImageField } from '../components/ui/ImageField'
 import { Label } from '../components/ui/Label'
+import { Button } from '../components/ui/Button'
 import { TransitionSection } from './panels/TransitionSection'
 import { LoadingSection } from './panels/LoadingSection'
 import { ValidationSection } from './panels/ValidationSection'
@@ -27,13 +30,45 @@ export function StepPropertiesPanel({
   step,
   allSteps,
   onChange,
+  onApply,
 }: {
   step: FlowStep
   allSteps: FlowStep[]
   onChange: (patch: Partial<FlowStep>) => void
+  onApply: () => void
 }) {
+  const [applied, setApplied] = useState(false)
+  const appliedTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+
+  useEffect(() => {
+    return () => clearTimeout(appliedTimer.current)
+  }, [])
+
+  function handleApplyClick() {
+    onApply()
+    setApplied(true)
+    clearTimeout(appliedTimer.current)
+    appliedTimer.current = setTimeout(() => setApplied(false), 1600)
+  }
+
   return (
     <div className="flex h-full flex-col overflow-y-auto">
+      <div className="sticky top-0 z-10 flex items-center justify-between gap-2 border-b border-[var(--vb-border)] bg-[var(--vb-surface-1)] px-4 py-2.5">
+        <p className="min-w-0 truncate text-[11px] text-[var(--vb-text-muted)]">
+          Salvo automaticamente
+        </p>
+        <Button
+          type="button"
+          variant={applied ? 'secondary' : 'primary'}
+          size="sm"
+          className="shrink-0 whitespace-nowrap"
+          onClick={handleApplyClick}
+        >
+          {applied ? <Check size={14} /> : null}
+          {applied ? 'Aplicado!' : 'Aplicar alterações'}
+        </Button>
+      </div>
+
       <Section title="Etapa">
         <div className="flex flex-col gap-3">
           <div>
