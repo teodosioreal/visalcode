@@ -13,7 +13,11 @@ const config = defineConfig({
     devtools(),
     nitro({ rollupConfig: { external: [/^@sentry\//] } }),
     tailwindcss(),
-    tanstackStart(),
+    tanstackStart({
+      // Gera um site 100% estático (HTML/CSS/JS), sem precisar de servidor
+      // Node — funciona em hospedagem compartilhada comum (ex: Hostinger).
+      spa: { enabled: true },
+    }),
     viteReact(),
   ],
 })

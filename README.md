@@ -59,3 +59,29 @@ src/
 2. Extraia o `.zip` por cima da pasta do projeto (ou sobre um clone do
    repositório).
 3. `git add -A && git commit -m "Atualiza página via editor visual" && git push`.
+
+## Publicando o site (hospedagem compartilhada, ex: Hostinger)
+
+Este projeto gera um site **100% estático** (HTML/CSS/JS puro) — não precisa
+de VPS, nem de Node.js rodando no servidor. Funciona em qualquer hospedagem
+compartilhada comum.
+
+```bash
+npm run build
+```
+
+Isso cria a pasta **`hospedagem-estatica/`**, já pronta pra subir. Dentro
+dela tem só `index.html` e uma pasta `assets/`.
+
+1. Abra o **Gerenciador de Arquivos** (ou FTP) do painel da Hostinger.
+2. Entre na pasta pública do seu domínio (geralmente `public_html`).
+3. Envie **todo o conteúdo** de dentro de `hospedagem-estatica/` pra lá
+   (o `index.html` deve ficar direto dentro de `public_html`, não dentro de
+   uma subpasta).
+4. Pronto — acessando o seu domínio já abre o editor.
+
+Se preferir rodar num VPS com Node.js (como o painel de ofertas já roda),
+também funciona: depois do `npm run build`, o próprio comando `npm run
+build` também gera `.output/server/index.mjs`, que pode ser executado com
+`node .output/server/index.mjs` atrás de um nginx/pm2. Mas pra esse editor,
+a opção estática acima é mais simples e não tem custo de servidor.

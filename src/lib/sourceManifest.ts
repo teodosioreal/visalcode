@@ -5,6 +5,7 @@ export const sourceFiles = import.meta.glob(
   [
     '/src/**/*.{ts,tsx,css,json}',
     '!/src/routeTree.gen.ts',
+    '/scripts/**/*.mjs',
     '/*.{json,ts,js}',
     '/README.md',
     '/.gitignore',
