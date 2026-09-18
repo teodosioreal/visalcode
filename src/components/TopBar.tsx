@@ -1,0 +1,70 @@
+import { useState, type ReactNode } from 'react'
+import { Download, LayoutGrid, Check } from 'lucide-react'
+import ThemeToggle from './ThemeToggle'
+import { Button } from './ui/Button'
+import { AddBlockButton } from './AddBlockButton'
+
+export function TopBar({
+  onDownload,
+  saved,
+  children,
+}: {
+  onDownload: () => Promise<void> | void
+  saved: boolean
+  children?: ReactNode
+}) {
+  const [downloading, setDownloading] = useState(false)
+
+  async function handleDownload() {
+    setDownloading(true)
+    try {
+      await onDownload()
+    } finally {
+      setDownloading(false)
+    }
+  }
+
+  return (
+    <div className="flex h-14 items-center justify-between gap-2 border-b border-[var(--vb-border)] bg-[var(--vb-surface-1)] px-2 sm:gap-3 sm:px-4">
+      <div className="flex shrink-0 items-center gap-2.5 overflow-hidden">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--vb-accent)] text-white">
+          <LayoutGrid size={18} />
+        </div>
+        <div className="hidden min-w-0 sm:block">
+          <p className="truncate text-sm font-bold leading-tight text-[var(--vb-text)]">
+            Editor Visual
+          </p>
+          <p className="flex items-center gap-1 truncate text-[11px] leading-tight text-[var(--vb-text-muted)]">
+            {saved ? (
+              <>
+                <Check size={11} className="text-emerald-500" /> Salvo automaticamente
+              </>
+            ) : (
+              'Editando…'
+            )}
+          </p>
+        </div>
+      </div>
+
+      <div className="hidden flex-1 justify-center md:flex">{children}</div>
+
+      <div className="flex min-w-0 shrink items-center gap-1.5 sm:gap-2">
+        <AddBlockButton />
+        <Button
+          type="button"
+          variant="primary"
+          size="sm"
+          onClick={handleDownload}
+          disabled={downloading}
+          title="Baixar Projeto (.zip)"
+        >
+          <Download size={16} />
+          <span className="hidden md:inline">
+            {downloading ? 'Empacotando…' : 'Baixar Projeto (.zip)'}
+          </span>
+        </Button>
+        <ThemeToggle />
+      </div>
+    </div>
+  )
+}

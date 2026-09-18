@@ -1,0 +1,116 @@
+{
+  "root": { "props": { "title": "Minha página" } },
+  "content": [
+    {
+      "type": "Header",
+      "props": {
+        "id": "header-1",
+        "logoText": "Sua Marca",
+        "links": [
+          { "label": "Início", "url": "#inicio" },
+          { "label": "Ofertas", "url": "#ofertas" },
+          { "label": "Contato", "url": "#contato" }
+        ],
+        "showCta": true,
+        "ctaLabel": "Fale conosco",
+        "ctaUrl": "#contato",
+        "backgroundColor": "#0f172a",
+        "textColor": "#ffffff"
+      }
+    },
+    {
+      "type": "Banner",
+      "props": {
+        "id": "banner-1",
+        "eyebrow": "Bem-vindo",
+        "title": "Edite este banner do jeito que quiser",
+        "subtitle": "Clique em qualquer texto, imagem ou botão nesta página para editar. As mudanças ficam salvas automaticamente.",
+        "imageUrl": "https://placehold.co/640x420?text=Sua+imagem",
+        "buttonLabel": "Ver ofertas",
+        "buttonUrl": "#ofertas",
+        "align": "left",
+        "backgroundColor": "#eef2ff",
+        "textColor": "#111827",
+        "spacing": { "top": 64, "bottom": 64, "x": 24 }
+      }
+    },
+    {
+      "type": "PricingTable",
+      "props": {
+        "id": "pricing-1",
+        "title": "Planos e preços",
+        "subtitle": "Escolha a opção ideal para você",
+        "accentColor": "#2563eb",
+        "plans": [
+          {
+            "name": "Básico",
+            "price": "R$ 29",
+            "period": "/mês",
+            "features": "Recurso 1\nRecurso 2\nRecurso 3",
+            "ctaLabel": "Assinar",
+            "ctaUrl": "#",
+            "highlighted": false
+          },
+          {
+            "name": "Profissional",
+            "price": "R$ 59",
+            "period": "/mês",
+            "features": "Tudo do Básico\nRecurso extra\nSuporte prioritário",
+            "ctaLabel": "Assinar",
+            "ctaUrl": "#",
+            "highlighted": true
+          },
+          {
+            "name": "Premium",
+            "price": "R$ 99",
+            "period": "/mês",
+            "features": "Tudo do Profissional\nRecursos ilimitados\nSuporte VIP",
+            "ctaLabel": "Assinar",
+            "ctaUrl": "#",
+            "highlighted": false
+          }
+        ],
+        "spacing": { "top": 56, "bottom": 56, "x": 24 }
+      }
+    },
+    {
+      "type": "Testimonials",
+      "props": {
+        "id": "testimonials-1",
+        "title": "O que dizem sobre a gente",
+        "backgroundColor": "#f8fafc",
+        "items": [
+          {
+            "quote": "Um serviço excelente, recomendo demais!",
+            "name": "Maria Souza",
+            "role": "Cliente",
+            "avatarUrl": "https://placehold.co/80x80?text=M"
+          },
+          {
+            "quote": "Superou minhas expectativas em todos os aspectos.",
+            "name": "João Lima",
+            "role": "Cliente",
+            "avatarUrl": "https://placehold.co/80x80?text=J"
+          }
+        ],
+        "spacing": { "top": 56, "bottom": 56, "x": 24 }
+      }
+    },
+    {
+      "type": "Footer",
+      "props": {
+        "id": "footer-1",
+        "brandText": "Sua Marca",
+        "copyrightText": "© 2026 Sua Marca. Todos os direitos reservados.",
+        "links": [
+          { "label": "Instagram", "url": "#" },
+          { "label": "WhatsApp", "url": "#" },
+          { "label": "Contato", "url": "#" }
+        ],
+        "backgroundColor": "#0f172a",
+        "textColor": "#e2e8f0"
+      }
+    }
+  ],
+  "zones": {}
+}
