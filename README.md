@@ -80,11 +80,16 @@ da tela.
   ver a transição, a validação e o avanço entre etapas acontecendo (depois,
   **"Sair do teste"** volta a mostrar a etapa que você está editando).
 - **Painel direito**, por etapa selecionada:
+  - **Etapa**: título, descrição e uma imagem opcional no topo da etapa
+    (URL). A descrição aceita `{{id-do-campo}}` pra citar a resposta dada
+    numa etapa anterior — útil pra montar uma etapa final de "diagnóstico"
+    que resume o que a pessoa preencheu antes de pedir o contato dela.
   - **Efeito e tempo de transição**: tipo de animação (fade, deslizar,
     zoom, step-up...), duração em ms, delay e curva de easing (inclusive
     `cubic-bezier` personalizado).
-  - **Regras e validação**: se a etapa é obrigatória e se avança sozinha
-    (ao preencher/selecionar) ou só com clique em "Próximo".
+  - **Regras e validação**: se a etapa é obrigatória, se avança sozinha
+    (ao preencher/selecionar) ou só com clique no botão de avançar, e o
+    texto desse botão (ex: "Quero minha avaliação").
   - **Campos**: adicionar campos (texto, e-mail, número, seleção
     única/múltipla, upload, data...), com rótulo, obrigatoriedade, mensagem
     de erro customizada e regras de validação (tamanho mín/máx, valor

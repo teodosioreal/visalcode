@@ -39,12 +39,23 @@ export function StepPropertiesPanel({
             />
           </div>
           <div>
-            <Label htmlFor="step-desc">Descrição (opcional)</Label>
+            <Label htmlFor="step-desc">
+              Descrição (opcional) — use {'{{id-do-campo}}'} pra citar uma resposta anterior
+            </Label>
             <Textarea
               id="step-desc"
-              rows={2}
+              rows={3}
               value={step.description}
               onChange={(e) => onChange({ description: e.target.value })}
+            />
+          </div>
+          <div>
+            <Label htmlFor="step-image">Imagem no topo da etapa (opcional)</Label>
+            <Input
+              id="step-image"
+              placeholder="https://..."
+              value={step.imageUrl}
+              onChange={(e) => onChange({ imageUrl: e.target.value })}
             />
           </div>
         </div>

@@ -1,4 +1,5 @@
 import { Label } from '../../components/ui/Label'
+import { Input } from '../../components/ui/Input'
 import { Switch } from '../../components/ui/Switch'
 import type { AdvanceTrigger, StepValidation } from '../types'
 
@@ -44,6 +45,17 @@ export function ValidationSection({
           ))}
         </div>
       </div>
+
+      {value.advanceTrigger === 'button' ? (
+        <div>
+          <Label htmlFor="next-btn-label">Texto do botão de avançar</Label>
+          <Input
+            id="next-btn-label"
+            value={value.nextButtonLabel}
+            onChange={(e) => onChange({ ...value, nextButtonLabel: e.target.value })}
+          />
+        </div>
+      ) : null}
     </div>
   )
 }

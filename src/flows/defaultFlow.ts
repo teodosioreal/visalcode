@@ -1,65 +1,173 @@
 import type { FlowConfig } from './types'
 import { defaultTransition } from './factory'
 
-const stepObjetivo = 'step-objetivo'
-const stepComprador = 'step-comprador'
-const stepVendedor = 'step-vendedor'
-const stepFim = 'step-fim'
+const stepTattoo = 'step-tattoo'
+const stepNails = 'step-nails'
+const stepShape = 'step-shape'
+const stepSize = 'step-size'
+const stepCare = 'step-care'
+const stepDiagnostico = 'step-diagnostico'
 
-const fieldObjetivo = 'field-objetivo'
+const quickTransition = { ...defaultTransition(), type: 'fade' as const, durationMs: 300 }
 
-/** Fluxo de exemplo pra já mostrar branching, validação e transições funcionando. */
+/**
+ * Fluxo de captação de leads com perguntas de qualificação (nichos de pés),
+ * avançando sozinho a cada resposta, terminando numa etapa de "diagnóstico"
+ * que resume o que a pessoa respondeu e captura o contato.
+ */
 export const defaultFlow: FlowConfig = {
-  id: 'flow-exemplo',
-  name: 'Fluxo de exemplo',
-  startStepId: stepObjetivo,
+  id: 'flow-leads-diagnostico',
+  name: 'Captação de leads — diagnóstico do perfil',
+  startStepId: stepTattoo,
   steps: [
     {
-      id: stepObjetivo,
-      title: 'Qual é o seu objetivo?',
-      description: 'Escolha uma opção para continuar.',
+      id: stepTattoo,
+      title: 'Você tem alguma tatuagem nos pés?',
+      description: 'Ajuda a entender melhor o seu perfil.',
+      imageUrl: '',
       fields: [
         {
-          id: fieldObjetivo,
+          id: 'tattoo',
           type: 'single-select',
-          label: 'Você quer...',
+          label: 'Tatuagem',
           placeholder: '',
           required: true,
           errorMessage: 'Escolha uma opção para continuar.',
           options: [
-            { id: 'opt-comprar', label: 'Comprar um produto', value: 'comprar' },
-            { id: 'opt-vender', label: 'Vender um produto', value: 'vender' },
+            { id: 'opt-tattoo-1', label: 'Não tenho', value: 'nao-tenho' },
+            { id: 'opt-tattoo-2', label: 'Tenho uma pequena', value: 'pequena' },
+            { id: 'opt-tattoo-3', label: 'Tenho várias', value: 'varias' },
+            { id: 'opt-tattoo-4', label: 'Tenho, mas escondidas', value: 'escondidas' },
           ],
           validation: {},
         },
       ],
-      validation: { required: true, advanceTrigger: 'auto' },
-      transition: { ...defaultTransition(), type: 'fade', durationMs: 250 },
-      branches: [
-        {
-          id: 'branch-comprar',
-          whenFieldId: fieldObjetivo,
-          operator: 'equals',
-          value: 'comprar',
-          goToStepId: stepComprador,
-        },
-        {
-          id: 'branch-vender',
-          whenFieldId: fieldObjetivo,
-          operator: 'equals',
-          value: 'vender',
-          goToStepId: stepVendedor,
-        },
-      ],
-      defaultNextStepId: stepComprador,
+      validation: { required: true, advanceTrigger: 'auto', nextButtonLabel: 'Próximo' },
+      transition: quickTransition,
+      branches: [],
+      defaultNextStepId: stepNails,
     },
     {
-      id: stepComprador,
-      title: 'Seus dados',
-      description: 'Pra gente te avisar quando encontrar a oferta certa.',
+      id: stepNails,
+      title: 'Costuma pintar as unhas dos pés?',
+      description: 'Informação opcional, mas ajuda no seu diagnóstico.',
+      imageUrl: '',
       fields: [
         {
-          id: 'field-nome',
+          id: 'nails',
+          type: 'single-select',
+          label: 'Unhas',
+          placeholder: '',
+          required: true,
+          errorMessage: 'Escolha uma opção para continuar.',
+          options: [
+            { id: 'opt-nails-1', label: 'Nunca', value: 'nunca' },
+            { id: 'opt-nails-2', label: 'Às vezes', value: 'as-vezes' },
+            { id: 'opt-nails-3', label: 'Sempre', value: 'sempre' },
+            { id: 'opt-nails-4', label: 'Faço pedicure profissional', value: 'pedicure' },
+          ],
+          validation: {},
+        },
+      ],
+      validation: { required: true, advanceTrigger: 'auto', nextButtonLabel: 'Próximo' },
+      transition: quickTransition,
+      branches: [],
+      defaultNextStepId: stepShape,
+    },
+    {
+      id: stepShape,
+      title: 'Qual o formato dos seus dedos?',
+      description: '',
+      imageUrl: '',
+      fields: [
+        {
+          id: 'shape',
+          type: 'single-select',
+          label: 'Formato',
+          placeholder: '',
+          required: true,
+          errorMessage: 'Escolha uma opção para continuar.',
+          options: [
+            { id: 'opt-shape-1', label: 'Egípcio (decrescente)', value: 'egipcio' },
+            { id: 'opt-shape-2', label: 'Grego (segundo dedo maior)', value: 'grego' },
+            { id: 'opt-shape-3', label: 'Romano (3 primeiros iguais)', value: 'romano' },
+            { id: 'opt-shape-4', label: 'Não sei', value: 'nao-sei' },
+          ],
+          validation: {},
+        },
+      ],
+      validation: { required: true, advanceTrigger: 'auto', nextButtonLabel: 'Próximo' },
+      transition: quickTransition,
+      branches: [],
+      defaultNextStepId: stepSize,
+    },
+    {
+      id: stepSize,
+      title: 'Qual o tamanho do seu pé?',
+      description: 'Compradores costumam filtrar por tamanho.',
+      imageUrl: '',
+      fields: [
+        {
+          id: 'size',
+          type: 'single-select',
+          label: 'Tamanho',
+          placeholder: '',
+          required: true,
+          errorMessage: 'Escolha uma opção para continuar.',
+          options: [
+            { id: 'opt-size-1', label: '33–35', value: '33-35' },
+            { id: 'opt-size-2', label: '36–37', value: '36-37' },
+            { id: 'opt-size-3', label: '38–39', value: '38-39' },
+            { id: 'opt-size-4', label: '40+', value: '40-mais' },
+          ],
+          validation: {},
+        },
+      ],
+      validation: { required: true, advanceTrigger: 'auto', nextButtonLabel: 'Próximo' },
+      transition: quickTransition,
+      branches: [],
+      defaultNextStepId: stepCare,
+    },
+    {
+      id: stepCare,
+      title: 'Como são seus cuidados com os pés?',
+      description: '',
+      imageUrl: '',
+      fields: [
+        {
+          id: 'care',
+          type: 'single-select',
+          label: 'Cuidados',
+          placeholder: '',
+          required: true,
+          errorMessage: 'Escolha uma opção para continuar.',
+          options: [
+            { id: 'opt-care-1', label: 'Nenhum especial', value: 'nenhum' },
+            { id: 'opt-care-2', label: 'Hidratação semanal', value: 'hidratacao' },
+            { id: 'opt-care-3', label: 'Pedicure mensal', value: 'pedicure-mensal' },
+            {
+              id: 'opt-care-4',
+              label: 'Spa, esfoliação e hidratação diária',
+              value: 'spa-completo',
+            },
+          ],
+          validation: {},
+        },
+      ],
+      validation: { required: true, advanceTrigger: 'auto', nextButtonLabel: 'Próximo' },
+      transition: quickTransition,
+      branches: [],
+      defaultNextStepId: stepDiagnostico,
+    },
+    {
+      id: stepDiagnostico,
+      title: 'Seu diagnóstico está pronto! 🎉',
+      description:
+        'Com base no que você nos contou — tatuagem: {{tattoo}}, unhas: {{nails}}, formato dos dedos: {{shape}}, tamanho do pé: {{size}} e cuidados: {{care}} — o seu perfil tem tudo pra se destacar. Deixe seu contato abaixo que a gente te chama com os próximos passos.',
+      imageUrl: '',
+      fields: [
+        {
+          id: 'lead-nome',
           type: 'text',
           label: 'Nome completo',
           placeholder: 'Seu nome',
@@ -69,59 +177,22 @@ export const defaultFlow: FlowConfig = {
           validation: { minLength: 2 },
         },
         {
-          id: 'field-email',
-          type: 'email',
-          label: 'E-mail',
-          placeholder: 'voce@email.com',
+          id: 'lead-whatsapp',
+          type: 'phone',
+          label: 'WhatsApp',
+          placeholder: '(11) 91234-5678',
           required: true,
-          errorMessage: 'Digite um e-mail válido.',
-          options: [],
-          validation: { pattern: '^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$' },
-        },
-      ],
-      validation: { required: true, advanceTrigger: 'button' },
-      transition: { ...defaultTransition(), type: 'slide-left' },
-      branches: [],
-      defaultNextStepId: stepFim,
-    },
-    {
-      id: stepVendedor,
-      title: 'Sobre o produto',
-      description: 'Conte um pouco do que você quer vender.',
-      fields: [
-        {
-          id: 'field-produto',
-          type: 'text',
-          label: 'Nome do produto',
-          placeholder: 'Ex: iPhone 13',
-          required: true,
-          errorMessage: 'Digite o nome do produto.',
+          errorMessage: 'Digite um WhatsApp válido.',
           options: [],
           validation: {},
         },
-        {
-          id: 'field-preco',
-          type: 'number',
-          label: 'Preço desejado (R$)',
-          placeholder: '0,00',
-          required: true,
-          errorMessage: 'Digite um preço.',
-          options: [],
-          validation: { min: 0 },
-        },
       ],
-      validation: { required: true, advanceTrigger: 'button' },
-      transition: { ...defaultTransition(), type: 'slide-right' },
-      branches: [],
-      defaultNextStepId: stepFim,
-    },
-    {
-      id: stepFim,
-      title: 'Tudo certo!',
-      description: 'Recebemos suas informações. Obrigado!',
-      fields: [],
-      validation: { required: false, advanceTrigger: 'button' },
-      transition: { ...defaultTransition(), type: 'zoom' },
+      validation: {
+        required: true,
+        advanceTrigger: 'button',
+        nextButtonLabel: 'Quero minha avaliação',
+      },
+      transition: { ...defaultTransition(), type: 'zoom', durationMs: 400 },
       branches: [],
       defaultNextStepId: null,
     },

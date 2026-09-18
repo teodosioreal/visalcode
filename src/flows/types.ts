@@ -61,6 +61,8 @@ export type AdvanceTrigger = 'auto' | 'button'
 export type StepValidation = {
   required: boolean
   advanceTrigger: AdvanceTrigger
+  /** Texto do botão de avançar, quando advanceTrigger === 'button'. */
+  nextButtonLabel: string
 }
 
 export type BranchOperator = 'equals' | 'not-equals' | 'contains' | 'greater-than' | 'less-than'
@@ -77,6 +79,8 @@ export type FlowStep = {
   id: string
   title: string
   description: string
+  /** URL de uma imagem/ilustração mostrada no topo da etapa. Opcional. */
+  imageUrl: string
   fields: FormField[]
   validation: StepValidation
   transition: TransitionConfig

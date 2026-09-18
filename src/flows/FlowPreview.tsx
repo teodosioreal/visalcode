@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Play, RotateCcw } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { FieldRenderer } from './FieldRenderer'
 import { transitionStyle } from './transitionStyles'
 import { resolveNextStepId, validateStep } from './validation'
+import { buildFieldsById, interpolate } from './interpolate'
 import type { FieldValue, FlowConfig, FlowStep } from './types'
 
 export function FlowPreview({
@@ -24,6 +25,11 @@ export function FlowPreview({
   const shownStepId = testMode ? playingStepId : selectedStepId
   const shownStep: FlowStep | undefined =
     flow.steps.find((s) => s.id === shownStepId) ?? flow.steps[0]
+
+  const fieldsById = useMemo(
+    () => buildFieldsById(flow.steps.map((s) => s.fields)),
+    [flow.steps],
+  )
 
   // Anima a entrada sempre que a etapa mostrada muda.
   useEffect(() => {
@@ -124,45 +130,57 @@ export function FlowPreview({
           <div
             key={shownStepId}
             style={transitionStyle(shownStep.transition, phase)}
-            className="w-full max-w-md rounded-2xl border border-[var(--vb-border)] bg-white p-8 shadow-sm"
+            className="w-full max-w-md overflow-hidden rounded-2xl border border-[var(--vb-border)] bg-white shadow-sm"
           >
-            <h3 className="text-xl font-bold text-gray-900">{shownStep.title}</h3>
-            {shownStep.description ? (
-              <p className="mt-1 text-sm text-gray-500">{shownStep.description}</p>
+            {shownStep.imageUrl ? (
+              <img
+                src={shownStep.imageUrl}
+                alt=""
+                className="h-40 w-full object-cover"
+              />
             ) : null}
 
-            <div className="mt-5 flex flex-col gap-4">
-              {shownStep.fields.map((field) => (
-                <FieldRenderer
-                  key={field.id}
-                  field={field}
-                  value={values[field.id]}
-                  error={testMode ? errors[field.id] : undefined}
-                  onChange={(value) =>
-                    testMode
-                      ? handleFieldChange(shownStep, field.id, value)
-                      : undefined
-                  }
-                />
-              ))}
+            <div className="p-8">
+              <h3 className="text-xl font-bold text-gray-900">{shownStep.title}</h3>
+              {shownStep.description ? (
+                <p className="mt-1 whitespace-pre-wrap text-sm text-gray-500">
+                  {interpolate(shownStep.description, values, fieldsById)}
+                </p>
+              ) : null}
+
+              <div className="mt-5 flex flex-col gap-4">
+                {shownStep.fields.map((field) => (
+                  <FieldRenderer
+                    key={field.id}
+                    field={field}
+                    value={values[field.id]}
+                    error={testMode ? errors[field.id] : undefined}
+                    onChange={(value) =>
+                      testMode
+                        ? handleFieldChange(shownStep, field.id, value)
+                        : undefined
+                    }
+                  />
+                ))}
+              </div>
+
+              {testMode && shownStep.validation.advanceTrigger === 'button' ? (
+                <Button
+                  type="button"
+                  variant="primary"
+                  className="mt-6 w-full"
+                  onClick={() => handleNextClick(shownStep)}
+                >
+                  {shownStep.validation.nextButtonLabel || 'Próximo'}
+                </Button>
+              ) : null}
+
+              {!testMode ? (
+                <p className="mt-5 rounded-lg bg-gray-50 px-3 py-2 text-center text-xs text-gray-400">
+                  Clique em "Testar fluxo" para preencher de verdade e ver o avanço entre etapas.
+                </p>
+              ) : null}
             </div>
-
-            {testMode && shownStep.validation.advanceTrigger === 'button' ? (
-              <Button
-                type="button"
-                variant="primary"
-                className="mt-6 w-full"
-                onClick={() => handleNextClick(shownStep)}
-              >
-                Próximo
-              </Button>
-            ) : null}
-
-            {!testMode ? (
-              <p className="mt-5 rounded-lg bg-gray-50 px-3 py-2 text-center text-xs text-gray-400">
-                Clique em "Testar fluxo" para preencher de verdade e ver o avanço entre etapas.
-              </p>
-            ) : null}
           </div>
         )}
       </div>
