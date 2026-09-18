@@ -3,15 +3,27 @@ import { Download, LayoutGrid, Check } from 'lucide-react'
 import ThemeToggle from './ThemeToggle'
 import { Button } from './ui/Button'
 import { AddBlockButton } from './AddBlockButton'
+import { GitHubButton, type GitHubPushStatus } from './GitHubButton'
+import type { GitHubSettings } from '../lib/github'
 
 export function TopBar({
   onDownload,
   saved,
   children,
+  githubSettings,
+  githubStatus,
+  githubError,
+  onOpenGitHubDialog,
+  onPushToGitHub,
 }: {
   onDownload: () => Promise<void> | void
   saved: boolean
   children?: ReactNode
+  githubSettings: GitHubSettings | null
+  githubStatus: GitHubPushStatus
+  githubError?: string
+  onOpenGitHubDialog: () => void
+  onPushToGitHub: () => void
 }) {
   const [downloading, setDownloading] = useState(false)
 
@@ -50,6 +62,13 @@ export function TopBar({
 
       <div className="flex min-w-0 shrink items-center gap-1.5 sm:gap-2">
         <AddBlockButton />
+        <GitHubButton
+          settings={githubSettings}
+          status={githubStatus}
+          errorMessage={githubError}
+          onOpenDialog={onOpenGitHubDialog}
+          onPush={onPushToGitHub}
+        />
         <Button
           type="button"
           variant="primary"

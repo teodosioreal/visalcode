@@ -32,6 +32,37 @@ visual — não existe uma "página normal" separada do editor.
 - Edições também ficam salvas automaticamente no navegador (localStorage),
   então recarregar a página não perde o trabalho.
 - O botão no canto superior direito alterna entre modo **claro/escuro/auto**.
+- **"Conectar GitHub"** salva o conteúdo editado direto num repositório do
+  GitHub, sem precisar baixar `.zip`. Veja a seção abaixo.
+
+## Conectar GitHub (salvar direto no repositório)
+
+Clique em **"Conectar GitHub"** no topo do editor e informe:
+
+- Um **token de acesso pessoal** (fine-grained) criado em
+  [github.com/settings/personal-access-tokens/new](https://github.com/settings/personal-access-tokens/new),
+  com acesso restrito **só a este repositório** e permissão **Contents:
+  Read and write**.
+- Usuário/organização, nome do repositório e branch (ex: `teodosioreal` /
+  `visalcode` / `main`).
+
+Depois de conectado:
+
+- **"Salvar no GitHub"** grava o conteúdo atual em
+  `src/data/initial-data.json` do repositório, como um commit direto na
+  branch configurada.
+- **"Carregar do GitHub"** (no ícone de engrenagem ao lado) traz o conteúdo
+  que já está no repositório para dentro do editor.
+
+O token fica guardado **só no seu navegador** (localStorage) — nunca é
+enviado a nenhum lugar além da própria API do GitHub. Não use essa opção em
+computador compartilhado, e revogue o token em
+[github.com/settings/tokens](https://github.com/settings/tokens) se
+precisar.
+
+Essa conexão salva só o **conteúdo da página** (o que muda quando você
+edita visualmente). Para levar todo o código-fonte do projeto pra um
+repositório novo pela primeira vez, use o **"Baixar Projeto (.zip)"**.
 
 ## Sobre a "Galeria Protegida"
 
