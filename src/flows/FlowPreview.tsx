@@ -118,6 +118,9 @@ export function FlowPreview({
     )
   }
 
+  const hasBackground =
+    !!shownStep.imageUrl && (shownStep.imageMode ?? 'banner') === 'background'
+
   let cardNode: ReactNode
 
   if (testMode && loadingMessage) {
@@ -153,8 +156,6 @@ export function FlowPreview({
       </div>
     )
   } else {
-    const hasBackground =
-      !!shownStep.imageUrl && (shownStep.imageMode ?? 'banner') === 'background'
     const hasBanner = !!shownStep.imageUrl && !hasBackground
 
     cardNode = (
@@ -170,9 +171,11 @@ export function FlowPreview({
               }
             : {}),
         }}
-        className={`relative w-full max-w-md overflow-hidden rounded-2xl border border-[var(--vb-border)] bg-white shadow-sm ${
-          hasBackground ? 'flex min-h-[420px] flex-col justify-end' : ''
-        }`}
+        className={
+          hasBackground
+            ? 'relative flex h-full w-full flex-col justify-end overflow-hidden'
+            : 'relative w-full max-w-md overflow-hidden rounded-2xl border border-[var(--vb-border)] bg-white shadow-sm'
+        }
       >
         {hasBanner ? (
           <img src={shownStep.imageUrl} alt="" className="h-40 w-full object-cover" />
@@ -296,18 +299,30 @@ export function FlowPreview({
         </div>
       </div>
 
-      <div className="flex flex-1 items-center justify-center overflow-y-auto bg-[var(--vb-bg)] p-6">
-        {viewport === 'mobile' ? <PhoneFrame>{cardNode}</PhoneFrame> : cardNode}
+      <div
+        className={`flex flex-1 overflow-y-auto bg-[var(--vb-bg)] ${
+          hasBackground ? '' : 'items-center justify-center p-6'
+        }`}
+      >
+        {viewport === 'mobile' ? (
+          <PhoneFrame fullBleed={hasBackground}>{cardNode}</PhoneFrame>
+        ) : (
+          cardNode
+        )}
       </div>
     </div>
   )
 }
 
-function PhoneFrame({ children }: { children: ReactNode }) {
+function PhoneFrame({ children, fullBleed }: { children: ReactNode; fullBleed: boolean }) {
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="rounded-[2.25rem] border-[10px] border-gray-900 bg-gray-900 shadow-xl">
-        <div className="relative flex h-[640px] w-[320px] flex-col items-center justify-center overflow-y-auto rounded-[1.4rem] bg-[var(--vb-bg)] p-4">
+        <div
+          className={`relative flex h-[640px] w-[320px] flex-col overflow-y-auto rounded-[1.4rem] bg-[var(--vb-bg)] ${
+            fullBleed ? '' : 'items-center justify-center p-4'
+          }`}
+        >
           <div className="pointer-events-none absolute left-1/2 top-2 z-20 h-1.5 w-14 -translate-x-1/2 rounded-full bg-black/50" />
           {children}
         </div>

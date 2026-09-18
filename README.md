@@ -88,8 +88,10 @@ da tela.
     (ela é redimensionada automaticamente e guardada dentro do próprio
     fluxo, sem precisar de link externo nem de servidor pra hospedar).
     Pode aparecer como **banner no topo do card** ou como **fundo cobrindo a
-    etapa inteira** (com uma sobreposição escura automática pra manter o
-    texto legível em cima da foto). A descrição aceita `{{id-do-campo}}`
+    etapa inteira** — nesse modo a foto preenche a tela toda de ponta a
+    ponta (inclusive a moldura do celular na pré-visualização), com o
+    formulário flutuando por cima e uma sobreposição escura automática pra
+    manter o texto legível. A descrição aceita `{{id-do-campo}}`
     pra citar a resposta dada numa etapa anterior — útil pra montar uma
     etapa final de "diagnóstico" que resume o que a pessoa preencheu antes
     de pedir o contato dela.
