@@ -41,12 +41,12 @@ export function TopBar({
 
   return (
     <div className="flex h-14 items-center justify-between gap-2 border-b border-[var(--vb-border)] bg-[var(--vb-surface-1)] px-2 sm:gap-3 sm:px-4">
-      <div className="flex shrink-0 items-center gap-2.5 overflow-hidden">
+      <div className="flex min-w-0 shrink items-center gap-2 overflow-hidden sm:gap-2.5">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--vb-accent)] text-white">
           <LayoutGrid size={18} />
         </div>
-        <div className="hidden min-w-0 sm:block">
-          <p className="truncate text-sm font-bold leading-tight text-[var(--vb-text)]">
+        <div className="min-w-0">
+          <p className="hidden truncate text-sm font-bold leading-tight text-[var(--vb-text)] sm:block">
             Editor Visual
           </p>
           <p
