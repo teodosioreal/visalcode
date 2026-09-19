@@ -1,5 +1,8 @@
+import { useRef, useState } from 'react'
+import { Upload, X } from 'lucide-react'
 import { Input, Textarea } from '../components/ui/Input'
 import { cn } from '../lib/utils'
+import { fileToOptimizedDataUrl } from '../lib/imageFile'
 import type { FieldValue, FormField } from './types'
 
 export function FieldRenderer({
@@ -143,13 +146,7 @@ function FieldInput({
       )
     }
     case 'file':
-      return (
-        <input
-          type="file"
-          onChange={(e) => onChange(e.target.files?.[0]?.name ?? '')}
-          className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
-        />
-      )
+      return <FileFieldInput value={value} onChange={onChange} hasError={hasError} />
     default:
       return (
         <Input
@@ -171,4 +168,82 @@ function FieldInput({
         />
       )
   }
+}
+
+/** Upload de foto (ex: documento, foto do produto...). Converte pra data
+ * URL no próprio navegador — vira o valor do campo, e viaja junto nas
+ * respostas até o webhook final, sem precisar de servidor pra hospedar. */
+function FileFieldInput({
+  value,
+  onChange,
+  hasError,
+}: {
+  value: FieldValue | undefined
+  onChange: (value: FieldValue) => void
+  hasError: boolean
+}) {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const dataUrl = typeof value === 'string' ? value : ''
+
+  async function handleFile(file: File | undefined) {
+    if (!file) return
+    setError(null)
+    setBusy(true)
+    try {
+      const optimized = await fileToOptimizedDataUrl(file, { maxDimension: 1200, quality: 0.75 })
+      onChange(optimized)
+    } catch {
+      setError('Não foi possível enviar esse arquivo. Tente outro.')
+    } finally {
+      setBusy(false)
+      if (inputRef.current) inputRef.current.value = ''
+    }
+  }
+
+  if (dataUrl) {
+    return (
+      <div className="relative w-fit">
+        <img
+          src={dataUrl}
+          alt=""
+          className="h-32 w-32 rounded-lg border border-gray-300 object-cover"
+        />
+        <button
+          type="button"
+          title="Remover"
+          onClick={() => onChange('')}
+          className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-gray-900 text-white shadow"
+        >
+          <X size={11} />
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      <button
+        type="button"
+        onClick={() => inputRef.current?.click()}
+        disabled={busy}
+        className={cn(
+          'flex h-28 w-full flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-dashed text-sm font-semibold text-gray-500 transition-colors hover:border-blue-400 hover:text-blue-600 disabled:opacity-60',
+          hasError ? 'border-red-400' : 'border-gray-300',
+        )}
+      >
+        <Upload size={18} />
+        {busy ? 'Enviando…' : 'Escolher arquivo'}
+      </button>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => handleFile(e.target.files?.[0])}
+      />
+      {error ? <p className="text-xs text-red-600">{error}</p> : null}
+    </div>
+  )
 }

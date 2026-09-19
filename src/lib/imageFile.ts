@@ -6,7 +6,12 @@ const JPEG_QUALITY = 0.82
  * uma data URL, pra guardar direto no fluxo (localStorage/JSON) sem precisar
  * de link externo nem de um servidor pra hospedar o arquivo.
  */
-export function fileToOptimizedDataUrl(file: File): Promise<string> {
+export function fileToOptimizedDataUrl(
+  file: File,
+  opts?: { maxDimension?: number; quality?: number },
+): Promise<string> {
+  const maxDimension = opts?.maxDimension ?? MAX_DIMENSION
+  const quality = opts?.quality ?? JPEG_QUALITY
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onerror = () => reject(new Error('Não foi possível ler o arquivo.'))
@@ -14,7 +19,7 @@ export function fileToOptimizedDataUrl(file: File): Promise<string> {
       const img = new Image()
       img.onerror = () => reject(new Error('Não foi possível abrir a imagem.'))
       img.onload = () => {
-        const scale = Math.min(1, MAX_DIMENSION / Math.max(img.width, img.height))
+        const scale = Math.min(1, maxDimension / Math.max(img.width, img.height))
         const width = Math.round(img.width * scale)
         const height = Math.round(img.height * scale)
 
@@ -31,7 +36,7 @@ export function fileToOptimizedDataUrl(file: File): Promise<string> {
         const keepPng = file.type === 'image/png' || file.type === 'image/gif'
         const dataUrl = keepPng
           ? canvas.toDataURL('image/png')
-          : canvas.toDataURL('image/jpeg', JPEG_QUALITY)
+          : canvas.toDataURL('image/jpeg', quality)
         resolve(dataUrl)
       }
       img.src = reader.result as string

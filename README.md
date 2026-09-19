@@ -120,13 +120,19 @@ da tela.
     (ao preencher/selecionar) ou só com clique no botão de avançar, e o
     texto desse botão (ex: "Quero minha avaliação").
   - **Campos**: adicionar campos (texto, e-mail, número, seleção
-    única/múltipla, upload, data...), com rótulo, obrigatoriedade, mensagem
+    única/múltipla, data...), com rótulo, obrigatoriedade, mensagem
     de erro customizada e regras de validação (tamanho mín/máx, valor
-    mín/máx, opções da seleção). Tem também o tipo **"Aceite
-    (privacidade/termos)"** — um checkbox de "Li e aceito..." com até dois
-    links customizáveis (texto + URL), pra apontar pra sua Política de
-    Privacidade e Termos de Uso; funciona como qualquer outro campo
-    obrigatório (bloqueia o avanço se não for marcado).
+    mín/máx, opções da seleção). Tem também:
+    - **"Upload de foto"**: a pessoa que preenche o formulário anexa uma
+      foto (ex: foto de um produto, de um documento, de si mesma...). A
+      foto é convertida em imagem direto no navegador dela e vira o valor
+      do campo — segue junto com o resto das respostas até o fim do fluxo
+      e é enviada pro **webhook** (veja abaixo) já como imagem de verdade,
+      não só o nome do arquivo.
+    - **"Aceite (privacidade/termos)"**: um checkbox de "Li e aceito..."
+      com até dois links customizáveis (texto + URL), pra apontar pra sua
+      Política de Privacidade e Termos de Uso; funciona como qualquer
+      outro campo obrigatório (bloqueia o avanço se não for marcado).
   - **Ramificação (branching)**: regras "se a resposta de tal campo for
     X, vá para a etapa Y", mais uma etapa padrão de destino quando nenhuma
     regra bate.

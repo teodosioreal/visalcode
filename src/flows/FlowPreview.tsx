@@ -68,10 +68,13 @@ export function FlowPreview({
     setLoadingMessage(null)
   }
 
-  function notifyWebhookOnCompletion(nextValues: Record<string, FieldValue>) {
+  function notifyWebhookOnCompletion(
+    nextValues: Record<string, FieldValue>,
+    opts?: { keepalive?: boolean },
+  ) {
     if (!flow.webhook?.enabled || !flow.webhook.url) return
     const payload = buildWebhookPayload(flow, nextValues, fieldsById)
-    sendWebhook(flow.webhook.url, payload).catch(() => {})
+    sendWebhook(flow.webhook.url, payload, opts).catch(() => {})
   }
 
   function goNext(step: FlowStep, nextValues: Record<string, FieldValue>) {
@@ -240,7 +243,12 @@ export function FlowPreview({
                 if (Object.keys(stepErrors).length > 0) {
                   e.preventDefault()
                 } else {
-                  notifyWebhookOnCompletion(values)
+                  // Só precisa de keepalive quando a navegação troca a página
+                  // atual (mesma aba) — em nova aba, a página continua viva
+                  // e o envio não corre risco de ser cortado no meio.
+                  notifyWebhookOnCompletion(values, {
+                    keepalive: !shownStep.finalLink?.openInNewTab,
+                  })
                 }
               }}
               className="mt-6 inline-flex h-9 w-full items-center justify-center gap-2 rounded-lg bg-[var(--vb-accent)] px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[var(--vb-accent-strong)]"

@@ -18,7 +18,7 @@ const TYPE_OPTIONS: Array<{ value: FieldType; label: string }> = [
   { value: 'date', label: 'Data' },
   { value: 'single-select', label: 'Seleção única' },
   { value: 'multi-select', label: 'Múltipla seleção' },
-  { value: 'file', label: 'Upload de arquivo' },
+  { value: 'file', label: 'Upload de foto' },
   { value: 'consent', label: 'Aceite (privacidade/termos)' },
 ]
 
