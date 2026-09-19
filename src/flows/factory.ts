@@ -81,8 +81,8 @@ export function newStep(title = 'Nova etapa'): FlowStep {
     id: newId('step'),
     title,
     description: '',
-    imageUrl: '',
-    imageMode: 'banner',
+    backgroundImageUrl: '',
+    cardImageUrl: '',
     loading: { enabled: false, message: 'Analisando suas respostas...', durationMs: 900 },
     finalLink: { enabled: false, url: '', label: 'Continuar', openInNewTab: true },
     fields: [defaultField()],
@@ -101,4 +101,28 @@ export function newFlow(name = 'Novo fluxo'): FlowConfig {
     startStepId: step.id,
     steps: [step],
   }
+}
+
+/** Fluxos salvos antes de `backgroundImageUrl`/`cardImageUrl` existirem
+ * (fundo e imagem do cartão viviam num único `imageUrl` + `imageMode`)
+ * continuam abrindo certinho: migra o campo antigo pro novo formato. */
+function migrateStep(raw: FlowStep & { imageUrl?: string; imageMode?: string }): FlowStep {
+  if (raw.backgroundImageUrl !== undefined || raw.cardImageUrl !== undefined) {
+    return {
+      ...raw,
+      backgroundImageUrl: raw.backgroundImageUrl ?? '',
+      cardImageUrl: raw.cardImageUrl ?? '',
+    }
+  }
+  const legacyUrl = raw.imageUrl ?? ''
+  const isBackground = raw.imageMode === 'background'
+  return {
+    ...raw,
+    backgroundImageUrl: isBackground ? legacyUrl : '',
+    cardImageUrl: isBackground ? '' : legacyUrl,
+  }
+}
+
+export function migrateFlow(flow: FlowConfig): FlowConfig {
+  return { ...flow, steps: flow.steps.map(migrateStep) }
 }

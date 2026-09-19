@@ -93,40 +93,28 @@ export function StepPropertiesPanel({
             />
           </div>
           <div>
-            <Label htmlFor="step-image">Imagem da etapa (opcional)</Label>
+            <Label htmlFor="step-bg-image">Imagem de fundo (opcional)</Label>
             <ImageField
-              id="step-image"
-              value={step.imageUrl}
-              onChange={(imageUrl) => onChange({ imageUrl })}
+              id="step-bg-image"
+              value={step.backgroundImageUrl}
+              onChange={(backgroundImageUrl) => onChange({ backgroundImageUrl })}
             />
+            <p className="mt-1 text-[11px] text-[var(--vb-text-muted)]">
+              Cobre a etapa inteira, com uma sombra escura pra manter o texto legível.
+            </p>
           </div>
-          {step.imageUrl ? (
-            <div>
-              <Label>Como mostrar a imagem</Label>
-              <div className="flex flex-col gap-1.5">
-                <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-[var(--vb-border)] px-3 py-2 text-sm text-[var(--vb-text)] has-[:checked]:border-[var(--vb-accent)] has-[:checked]:bg-[var(--vb-accent)]/10">
-                  <input
-                    type="radio"
-                    name="imageMode"
-                    className="accent-[var(--vb-accent)]"
-                    checked={(step.imageMode ?? 'banner') === 'banner'}
-                    onChange={() => onChange({ imageMode: 'banner' })}
-                  />
-                  Banner no topo do card
-                </label>
-                <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-[var(--vb-border)] px-3 py-2 text-sm text-[var(--vb-text)] has-[:checked]:border-[var(--vb-accent)] has-[:checked]:bg-[var(--vb-accent)]/10">
-                  <input
-                    type="radio"
-                    name="imageMode"
-                    className="accent-[var(--vb-accent)]"
-                    checked={step.imageMode === 'background'}
-                    onChange={() => onChange({ imageMode: 'background' })}
-                  />
-                  Fundo cobrindo a etapa inteira
-                </label>
-              </div>
-            </div>
-          ) : null}
+          <div>
+            <Label htmlFor="step-card-image">Imagem no cartão (opcional)</Label>
+            <ImageField
+              id="step-card-image"
+              value={step.cardImageUrl}
+              onChange={(cardImageUrl) => onChange({ cardImageUrl })}
+            />
+            <p className="mt-1 text-[11px] text-[var(--vb-text-muted)]">
+              Aparece como um banner dentro do cartão, acima do título — pode usar junto com a
+              imagem de fundo, ou sozinha.
+            </p>
+          </div>
         </div>
       </Section>
 

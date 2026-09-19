@@ -248,7 +248,7 @@ export function buildStepsFromCandidate(
 
     const step = newStep(question)
     step.description = subtitle
-    step.imageUrl = imageUrl
+    step.cardImageUrl = imageUrl
     step.fields = [field]
     step.validation = { required: true, advanceTrigger: 'auto', nextButtonLabel: 'Próximo' }
     return step

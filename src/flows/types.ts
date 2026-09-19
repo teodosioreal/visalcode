@@ -83,10 +83,6 @@ export type BranchRule = {
   goToStepId: string
 }
 
-/** "banner" = imagem no topo do card. "background" = imagem cobrindo a
- * etapa inteira, com sobreposição escura pra manter o texto legível. */
-export type ImageMode = 'banner' | 'background'
-
 /** Barrinha de "carregando/processando" mostrada ao sair desta etapa,
  * antes de revelar a próxima — dá a impressão de que algo foi analisado. */
 export type LoadingConfig = {
@@ -109,9 +105,12 @@ export type FlowStep = {
   id: string
   title: string
   description: string
-  /** URL de uma imagem/ilustração da etapa. Opcional. */
-  imageUrl: string
-  imageMode: ImageMode
+  /** Imagem cobrindo a etapa inteira, com sobreposição escura pra manter o
+   * texto legível. Independente de `cardImageUrl` — dá pra usar as duas. */
+  backgroundImageUrl: string
+  /** Imagem mostrada dentro do cartão (como um banner/destaque), acima do
+   * título. Independente de `backgroundImageUrl` — dá pra usar as duas. */
+  cardImageUrl: string
   loading: LoadingConfig
   finalLink: FinalLinkConfig
   fields: FormField[]

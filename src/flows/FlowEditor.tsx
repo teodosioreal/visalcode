@@ -8,7 +8,7 @@ import { JsonView } from './JsonView'
 import { CodeImportDialog } from './CodeImportDialog'
 import { FlowSettingsDialog } from './FlowSettingsDialog'
 import { defaultFlow } from './defaultFlow'
-import { newId, newStep } from './factory'
+import { migrateFlow, newId, newStep } from './factory'
 import { findCandidates, findCandidatesInZip, type CodeImportCandidate } from './codeImport'
 import type { FlowConfig, FlowStep } from './types'
 
@@ -19,7 +19,7 @@ const STORAGE_KEY = 'vb:flow-data'
 function loadStoredFlow(): FlowConfig | null {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY)
-    return raw ? (JSON.parse(raw) as FlowConfig) : null
+    return raw ? migrateFlow(JSON.parse(raw) as FlowConfig) : null
   } catch {
     return null
   }
@@ -170,7 +170,7 @@ export function FlowEditor() {
 
       if (isJson) {
         try {
-          const parsed = JSON.parse(text) as FlowConfig
+          const parsed = migrateFlow(JSON.parse(text) as FlowConfig)
           if (!Array.isArray(parsed.steps) || parsed.steps.length === 0) {
             throw new Error('Arquivo sem etapas válidas.')
           }

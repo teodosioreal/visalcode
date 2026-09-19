@@ -126,8 +126,7 @@ export function FlowPreview({
     )
   }
 
-  const hasBackground =
-    !!shownStep.imageUrl && (shownStep.imageMode ?? 'banner') === 'background'
+  const hasBackground = !!shownStep.backgroundImageUrl
   const showingTransientCard = testMode && (!!loadingMessage || finished)
   const fullBleed = hasBackground && !showingTransientCard
 
@@ -166,7 +165,7 @@ export function FlowPreview({
       </div>
     )
   } else {
-    const hasBanner = !!shownStep.imageUrl && !hasBackground
+    const hasCardImage = !!shownStep.cardImageUrl
 
     cardNode = (
       <div
@@ -175,7 +174,7 @@ export function FlowPreview({
           ...transitionStyle(shownStep.transition, phase),
           ...(hasBackground
             ? {
-                backgroundImage: `url(${shownStep.imageUrl})`,
+                backgroundImage: `url(${shownStep.backgroundImageUrl})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
               }
@@ -187,8 +186,12 @@ export function FlowPreview({
             : 'relative w-full max-w-md overflow-hidden rounded-2xl border border-[var(--vb-border)] bg-white shadow-sm'
         }
       >
-        {hasBanner ? (
-          <img src={shownStep.imageUrl} alt="" className="h-40 w-full object-cover" />
+        {hasCardImage ? (
+          <img
+            src={shownStep.cardImageUrl}
+            alt=""
+            className={`h-40 w-full object-cover ${hasBackground ? 'relative z-10' : ''}`}
+          />
         ) : null}
         {hasBackground ? (
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/5" />

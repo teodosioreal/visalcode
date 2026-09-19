@@ -24,8 +24,8 @@ export const defaultFlow: FlowConfig = {
       id: stepTattoo,
       title: 'Você tem alguma tatuagem nos pés?',
       description: 'Ajuda a entender melhor o seu perfil.',
-      imageUrl: '',
-      imageMode: 'banner',
+      backgroundImageUrl: '',
+      cardImageUrl: '',
       loading: { enabled: false, message: 'Analisando suas respostas...', durationMs: 900 },
       finalLink: { enabled: false, url: '', label: 'Continuar', openInNewTab: true },
       fields: [
@@ -54,8 +54,8 @@ export const defaultFlow: FlowConfig = {
       id: stepNails,
       title: 'Costuma pintar as unhas dos pés?',
       description: 'Informação opcional, mas ajuda no seu diagnóstico.',
-      imageUrl: '',
-      imageMode: 'banner',
+      backgroundImageUrl: '',
+      cardImageUrl: '',
       loading: { enabled: false, message: 'Analisando suas respostas...', durationMs: 900 },
       finalLink: { enabled: false, url: '', label: 'Continuar', openInNewTab: true },
       fields: [
@@ -84,8 +84,8 @@ export const defaultFlow: FlowConfig = {
       id: stepShape,
       title: 'Qual o formato dos seus dedos?',
       description: '',
-      imageUrl: '',
-      imageMode: 'banner',
+      backgroundImageUrl: '',
+      cardImageUrl: '',
       loading: { enabled: false, message: 'Analisando suas respostas...', durationMs: 900 },
       finalLink: { enabled: false, url: '', label: 'Continuar', openInNewTab: true },
       fields: [
@@ -114,8 +114,8 @@ export const defaultFlow: FlowConfig = {
       id: stepSize,
       title: 'Qual o tamanho do seu pé?',
       description: 'Compradores costumam filtrar por tamanho.',
-      imageUrl: '',
-      imageMode: 'banner',
+      backgroundImageUrl: '',
+      cardImageUrl: '',
       loading: { enabled: false, message: 'Analisando suas respostas...', durationMs: 900 },
       finalLink: { enabled: false, url: '', label: 'Continuar', openInNewTab: true },
       fields: [
@@ -144,8 +144,8 @@ export const defaultFlow: FlowConfig = {
       id: stepCare,
       title: 'Como são seus cuidados com os pés?',
       description: '',
-      imageUrl: '',
-      imageMode: 'banner',
+      backgroundImageUrl: '',
+      cardImageUrl: '',
       loading: { enabled: true, message: 'Montando seu diagnóstico...', durationMs: 1200 },
       finalLink: { enabled: false, url: '', label: 'Continuar', openInNewTab: true },
       fields: [
@@ -179,8 +179,8 @@ export const defaultFlow: FlowConfig = {
       title: 'Seu diagnóstico está pronto! 🎉',
       description:
         'Com base no que você nos contou — tatuagem: {{tattoo}}, unhas: {{nails}}, formato dos dedos: {{shape}}, tamanho do pé: {{size}} e cuidados: {{care}} — o seu perfil tem tudo pra se destacar. Deixe seu contato abaixo que a gente te chama com os próximos passos.',
-      imageUrl: '',
-      imageMode: 'banner',
+      backgroundImageUrl: '',
+      cardImageUrl: '',
       loading: { enabled: false, message: 'Analisando suas respostas...', durationMs: 900 },
       finalLink: { enabled: false, url: '', label: 'Continuar', openInNewTab: true },
       fields: [

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Dialog } from '../components/ui/Dialog'
 import { Button } from '../components/ui/Button'
+import { migrateFlow } from './factory'
 import type { FlowConfig } from './types'
 
 export function JsonView({
@@ -30,7 +31,7 @@ export function JsonView({
       if (!parsed.steps || !Array.isArray(parsed.steps)) {
         throw new Error('O JSON precisa ter uma lista "steps".')
       }
-      onApply(parsed)
+      onApply(migrateFlow(parsed))
       onClose()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'JSON inválido.')

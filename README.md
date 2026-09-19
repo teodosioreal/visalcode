@@ -86,18 +86,22 @@ da tela.
   **"Aplicar alterações"** — toda edição já é salva sozinha (localStorage),
   mas clicar nele confirma na hora, atualizando o horário de "Salvo às..."
   no topo da tela.
-  - **Etapa**: título, descrição e uma imagem opcional — cole uma URL ou
-    clique em **"Enviar"** pra escolher uma foto do computador/celular
-    (ela é redimensionada automaticamente e guardada dentro do próprio
-    fluxo, sem precisar de link externo nem de servidor pra hospedar).
-    Pode aparecer como **banner no topo do card** ou como **fundo cobrindo a
-    etapa inteira** — nesse modo a foto preenche a tela toda de ponta a
-    ponta (inclusive a moldura do celular na pré-visualização), com o
-    formulário flutuando por cima e uma sobreposição escura automática pra
-    manter o texto legível. A descrição aceita `{{id-do-campo}}`
-    pra citar a resposta dada numa etapa anterior — útil pra montar uma
-    etapa final de "diagnóstico" que resume o que a pessoa preencheu antes
-    de pedir o contato dela.
+  - **Etapa**: título, descrição e **duas imagens independentes**, que dá
+    pra usar juntas ou cada uma sozinha — em ambas, cole uma URL ou clique
+    em **"Enviar"** pra escolher uma foto do computador/celular (ela é
+    redimensionada automaticamente e guardada dentro do próprio fluxo, sem
+    precisar de link externo nem de servidor pra hospedar):
+    - **Imagem de fundo**: preenche a tela toda de ponta a ponta (inclusive
+      a moldura do celular na pré-visualização), com o formulário
+      flutuando por cima e uma sobreposição escura automática pra manter o
+      texto legível.
+    - **Imagem no cartão**: aparece como um banner dentro do cartão, acima
+      do título — funciona por cima da imagem de fundo (sem ser encoberta
+      pela sobreposição escura) ou sozinha, sem fundo nenhum.
+
+    A descrição aceita `{{id-do-campo}}` pra citar a resposta dada numa
+    etapa anterior — útil pra montar uma etapa final de "diagnóstico" que
+    resume o que a pessoa preencheu antes de pedir o contato dela.
   - **Efeito e tempo de transição**: **modelos prontos** (Suave, Rápido e
     direto, Deslizar, Subir suave, Dramático, Quicar, Virar, Desfoque,
     Nenhum) pra aplicar tudo de uma vez, mais um preview em miniatura com
