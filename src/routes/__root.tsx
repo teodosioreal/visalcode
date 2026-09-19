@@ -1,4 +1,4 @@
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
+import { HeadContent, Scripts, createRootRoute, useRouterState } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { AppTabs } from '../components/AppTabs'
@@ -37,6 +37,12 @@ export const Route = createRootRoute({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname })
+  // A página pública do formulário (/formulario) é o que se publica pra
+  // visitantes de verdade preencherem — não faz sentido mostrar as abas do
+  // editor nem as ferramentas de desenvolvimento ali.
+  const isPublicPage = pathname === '/formulario'
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -44,19 +50,21 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body className="flex h-screen flex-col overflow-hidden font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(37,99,235,0.24)]">
-        <AppTabs />
-        <div className="min-h-0 flex-1">{children}</div>
-        <TanStackDevtools
-          config={{
-            position: 'bottom-right',
-          }}
-          plugins={[
-            {
-              name: 'Tanstack Router',
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-          ]}
-        />
+        {isPublicPage ? null : <AppTabs />}
+        <div className={`min-h-0 flex-1 ${isPublicPage ? 'overflow-y-auto' : ''}`}>{children}</div>
+        {isPublicPage ? null : (
+          <TanStackDevtools
+            config={{
+              position: 'bottom-right',
+            }}
+            plugins={[
+              {
+                name: 'Tanstack Router',
+                render: <TanStackRouterDevtoolsPanel />,
+              },
+            ]}
+          />
+        )}
         <Scripts />
       </body>
     </html>

@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { Check, Code2, Download, Settings2, Upload, Workflow } from 'lucide-react'
+import { Check, Code2, Download, ExternalLink, Settings2, Upload, Workflow } from 'lucide-react'
 import ThemeToggle from '../components/ThemeToggle'
 import { Button } from '../components/ui/Button'
 import { formatFullDateTime, formatShortDateTime } from '../lib/utils'
@@ -46,6 +46,16 @@ export function FlowsTopBar({
       </div>
 
       <div className="flex min-w-0 shrink items-center gap-1.5 sm:gap-2">
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          onClick={() => window.open('/formulario', '_blank')}
+          title="Abre a página pública do formulário — é isso que você compartilha com quem vai preencher de verdade"
+        >
+          <ExternalLink size={16} />
+          <span className="hidden md:inline">Página pública</span>
+        </Button>
         <Button
           type="button"
           variant="secondary"

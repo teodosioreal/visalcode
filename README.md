@@ -73,6 +73,17 @@ Configura formulários com etapas sequenciais que avançam conforme o
 preenchimento — tipo um Typeform próprio. Fica na aba **"Fluxos"**, no topo
 da tela.
 
+### Página pública (`/formulario`)
+
+É **isso** que se publica/compartilha com quem vai preencher de verdade —
+sem nada do editor (abas, painéis, botão de "testar"), só o formulário em
+tela cheia, com **barra de progresso** no topo e **botão de voltar** (seta)
+pra corrigir uma resposta anterior sem perder o que já foi preenchido. Lê o
+mesmo fluxo configurado na aba "Fluxos". Pra abrir, clique no botão
+**"Página pública"** no topo do editor de fluxos (abre em nova aba) — é esse
+link (`seudominio.com/formulario`) que deve ser compartilhado, não o link
+do editor.
+
 - **Painel esquerdo**: lista de etapas — adicionar, duplicar, reordenar,
   excluir e marcar qual é a etapa inicial (ícone ▶).
 - **Centro (pré-visualização ao vivo)**: mostra a etapa selecionada com a
@@ -231,8 +242,22 @@ dela tem só `index.html` e uma pasta `assets/`.
    uma subpasta).
 4. Pronto — acessando o seu domínio já abre o editor.
 
-Se preferir rodar num VPS com Node.js (como o painel de ofertas já roda),
-também funciona: depois do `npm run build`, o próprio comando `npm run
-build` também gera `.output/server/index.mjs`, que pode ser executado com
-`node .output/server/index.mjs` atrás de um nginx/pm2. Mas pra esse editor,
-a opção estática acima é mais simples e não tem custo de servidor.
+### Alternativa: hospedagem com "Web App" Node.js (ex: Hostinger)
+
+Se a hospedagem exigir um app Node.js de verdade em vez de arquivos
+estáticos (algumas dão erro de "framework não compatível" se você tentar
+subir os arquivos estáticos numa ferramenta de deploy de app), use a pasta
+**`.output/server/`** gerada pelo mesmo `npm run build` — é um servidor
+Node.js pronto, com `package.json` próprio:
+
+1. Rode `npm run build`.
+2. Suba o **conteúdo** de `.output/server/` (não a pasta em si) — se a
+   plataforma vai rodar `npm install` sozinha, não precisa incluir
+   `node_modules`; se for só um upload direto sem instalação, rode
+   `npm install` ali dentro antes de empacotar.
+3. Comando de start: `npm start` (roda `node index.mjs`). A porta é lida
+   automaticamente da variável de ambiente que a hospedagem configurar.
+
+Pra esse editor em si (sem tráfego alto), a opção estática acima continua
+mais simples e sem custo de servidor — use essa alternativa só se a
+hospedagem não aceitar arquivos estáticos puros.

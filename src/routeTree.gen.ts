@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FlowsRouteImport } from './routes/flows'
+import { Route as FormularioRouteImport } from './routes/formulario'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const FlowsRoute = FlowsRouteImport.update({
   path: '/flows',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FormularioRoute = FormularioRouteImport.update({
+  id: '/formulario',
+  path: '/formulario',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/flows': typeof FlowsRoute
+  '/formulario': typeof FormularioRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/flows': typeof FlowsRoute
+  '/formulario': typeof FormularioRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/flows': typeof FlowsRoute
+  '/formulario': typeof FormularioRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/flows'
+  fullPaths: '/' | '/flows' | '/formulario'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/flows'
-  id: '__root__' | '/' | '/flows'
+  to: '/' | '/flows' | '/formulario'
+  id: '__root__' | '/' | '/flows' | '/formulario'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FlowsRoute: typeof FlowsRoute
+  FormularioRoute: typeof FormularioRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FlowsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/formulario': {
+      id: '/formulario'
+      path: '/formulario'
+      fullPath: '/formulario'
+      preLoaderRoute: typeof FormularioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FlowsRoute: FlowsRoute,
+  FormularioRoute: FormularioRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
