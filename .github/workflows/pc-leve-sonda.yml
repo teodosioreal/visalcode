@@ -18,9 +18,8 @@ jobs:
             apt-get install -y -qq --no-install-recommends calamares-settings-debian >/dev/null 2>&1
             echo "=== DEPENDS ==="; apt-cache depends calamares-settings-debian calamares | grep -E "Depends|Recommends"
             echo "=== ARQUIVOS ==="; dpkg -L calamares-settings-debian
-            for f in /etc/calamares/settings.conf /etc/calamares/modules/*.conf /usr/sbin/*bootloader* /usr/sbin/sources-* /usr/share/applications/*calamares* /usr/share/applications/install-debian.desktop /usr/bin/install-debian /etc/xdg/autostart/*calamares*; do
-              [ -f "$f" ] && { echo "===== $f"; cat "$f"; }
+            for f in /usr/share/calamares/helpers/* /usr/lib/calamares/modules/bootloader-config/module.desc /usr/lib/calamares/modules/sources-media/module.desc /usr/share/calamares/modules/partition.conf /usr/share/calamares/modules/grubcfg.conf /usr/share/calamares/modules/displaymanager.conf /usr/bin/add-calamares-desktop-icon /usr/bin/calamares-install-debian; do
+              [ -f "$f" ] && { echo "===== $f"; grep -v "^ *#" "$f" | grep -v "^ *$"; }
             done
-            echo "=== branding ==="; ls -R /etc/calamares/branding | head -30
-            cat /etc/calamares/branding/*/branding.desc 2>/dev/null | head -60
+            ls /usr/share/calamares/modules/ | head -80
           '
