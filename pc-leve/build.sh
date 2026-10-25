@@ -545,6 +545,22 @@ if [ -f boot/grub/config.cfg ]; then
     sed -i '/^set timeout/d' boot/grub/config.cfg
     echo "set timeout=5" >> boot/grub/config.cfg
 fi
+
+# Menu de boot em português (BIOS e UEFI)
+for f in isolinux/*.cfg boot/grub/*.cfg boot/grub/*/*.cfg; do
+    [ -f "$f" ] || continue
+    sed -i \
+        -e 's/Live system ([a-z0-9]* fail-safe mode)/PC Leve - modo de seguranca (se a tela ficar preta)/g' \
+        -e 's/Live system ([a-z0-9]*)/Iniciar o PC Leve/g' \
+        -e 's/Utilities/Utilitarios/g' \
+        -e 's/Hardware Detection Tool (HDT)/Detectar hardware (HDT)/g' \
+        -e 's/Automatic boot in \(.*\) second{,s}\.\.\./Iniciando sozinho em \1 segundo{,s}.../g' \
+        -e 's/Press ENTER to boot or TAB to edit a menu entry/Aperte ENTER para ligar/g' \
+        -e 's/Boot menu/Menu de inicializacao/g' \
+        "$f"
+done
+# Mostra no registro como ficou o menu (ajuda a conferir a tradução)
+grep -rhE 'menu label|menuentry|autoboot|tabmsg|menu title' isolinux boot/grub 2>/dev/null || true
 exit 0
 EOF
 chmod +x config/hooks/normal/9100-menu-boot.hook.binary
