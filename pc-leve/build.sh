@@ -559,6 +559,10 @@ for f in isolinux/*.cfg boot/grub/*.cfg boot/grub/*/*.cfg; do
         -e 's/Boot menu/Menu de inicializacao/g' \
         "$f"
 done
+# A frase da contagem regressiva é um texto padrão do programa de boot
+# (não está nos arquivos): acrescenta a versão em português.
+MENU=$(grep -l 'tabmsg' isolinux/*.cfg 2>/dev/null | head -1)
+[ -n "$MENU" ] && sed -i '/tabmsg/a menu autoboot Iniciando sozinho em # segundo{,s}...' "$MENU"
 # Mostra no registro como ficou o menu (ajuda a conferir a tradução)
 grep -rhE 'menu label|menuentry|autoboot|tabmsg|menu title' isolinux boot/grub 2>/dev/null || true
 exit 0
