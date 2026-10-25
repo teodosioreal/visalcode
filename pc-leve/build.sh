@@ -145,6 +145,8 @@ less
 ca-certificates
 wget
 systemd-timesyncd
+fdisk
+e2fsprogs
 
 # --- Idioma, teclado e fuso horário ---
 locales
@@ -320,6 +322,89 @@ Exec=firefox-esr %u
 Icon=firefox-esr
 EOF
 chmod +x $R/etc/skel/Desktop/firefox-esr.desktop
+
+# Botão "Ativar salvamento": cria a área de persistência no próprio pendrive.
+# Serve para quem gravou o pendrive em modo DD (o Rufus em modo ISO não dá
+# boot neste Debian). Mostra o pendrive exato e só grava se a pessoa digitar SIM.
+mkdir -p $R/usr/local/bin $R/usr/share/applications
+cat > $R/usr/local/bin/ativar-persistencia <<'EOF'
+#!/bin/bash
+# Cria uma partição "persistence" no espaço livre do pendrive de onde o
+# sistema ligou. Nunca mexe em outro disco.
+echo "=== Ativar salvamento (persistência) ==="
+echo
+fim() { echo; read -rp "Aperte Enter para fechar."; exit "${1:-0}"; }
+
+if lsblk -rno LABEL | grep -qx persistence; then
+    echo "O salvamento JÁ ESTÁ ativado neste pendrive. Nada a fazer."; fim 0
+fi
+
+# Descobre o pendrive de onde o sistema ligou
+PART=$(findmnt -no SOURCE /run/live/medium 2>/dev/null)
+DISCO=$(lsblk -no PKNAME "$PART" 2>/dev/null | head -1)
+if [ -z "$DISCO" ] || [ "$(lsblk -dno TRAN "/dev/$DISCO")" != "usb" ]; then
+    echo "Não achei o pendrive de onde o sistema ligou."
+    echo "(Isso só funciona quando o sistema liga por um pendrive USB.)"
+    fim 1
+fi
+DISCO="/dev/$DISCO"
+
+# Maior espaço livre no pendrive (em setores de 512 bytes)
+read -r INICIO SETORES < <(sudo sfdisk -F -q "$DISCO" 2>/dev/null \
+    | awk 'NR>1 {print $1, $3}' | sort -k2 -n | tail -1)
+if [ -z "$SETORES" ] || [ "$SETORES" -lt 2097152 ]; then
+    echo "O pendrive não tem espaço livre suficiente (precisa de pelo menos 1 GB)."
+    fim 1
+fi
+INICIO=$(( (INICIO + 2047) / 2048 * 2048 ))   # alinha em 1 MB
+
+echo "Vou criar a área de salvamento NESTE pendrive:"
+echo
+lsblk -d -o NAME,SIZE,MODEL,TRAN "$DISCO"
+echo
+echo "Espaço livre que será usado: $(( SETORES / 2048 / 1024 )) GB"
+echo "O sistema e os seus outros discos NÃO serão alterados."
+echo
+read -rp "Confere? Digite SIM (maiúsculo) para continuar: " RESP
+[ "$RESP" = "SIM" ] || { echo "Cancelado. Nada foi alterado."; fim 0; }
+
+set -e
+echo "$INICIO,,L" | sudo sfdisk --append --force --no-reread "$DISCO"
+sudo partx -a "$DISCO" 2>/dev/null || sudo partx -u "$DISCO" || true
+sleep 2
+# Trava de segurança: só formata a partição que começa exatamente no espaço
+# livre escolhido (nunca a partição do sistema).
+NOVA=""
+for p in $(lsblk -rnpo NAME,TYPE "$DISCO" | awk '$2=="part"{print $1}'); do
+    [ "$(cat /sys/class/block/$(basename "$p")/start)" = "$INICIO" ] && NOVA="$p"
+done
+if [ -z "$NOVA" ]; then
+    echo "A partição foi criada, mas o sistema ainda não a enxergou."
+    echo "Reinicie o computador e clique em 'Ativar salvamento' de novo."
+    fim 1
+fi
+sudo mkfs.ext4 -F -L persistence "$NOVA"
+sudo mkdir -p /mnt/persistencia
+sudo mount "$NOVA" /mnt/persistencia
+echo "/ union" | sudo tee /mnt/persistencia/persistence.conf >/dev/null
+sudo umount /mnt/persistencia
+echo
+echo "PRONTO! Reinicie o computador (menu Iniciar > Sair > Reiniciar)."
+echo "Daí em diante, favoritos, senhas, Wi-Fi e downloads ficam salvos."
+fim 0
+EOF
+chmod +x $R/usr/local/bin/ativar-persistencia
+cat > $R/usr/share/applications/ativar-persistencia.desktop <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=Ativar salvamento
+Comment=Faz o pendrive guardar favoritos, senhas e downloads
+Exec=qterminal -e /usr/local/bin/ativar-persistencia
+Icon=drive-removable-media
+Categories=System;
+EOF
+cp $R/usr/share/applications/ativar-persistencia.desktop $R/etc/skel/Desktop/
+chmod +x $R/etc/skel/Desktop/ativar-persistencia.desktop
 
 # Só em 64 bits: botão "Instalar Google Chrome"
 if [ "$ARQ" = "amd64" ]; then

@@ -1,0 +1,71 @@
+# Gera a ISO do PC Leve nos computadores do GitHub, testa no QEMU
+# e publica a ISO para download.
+name: PC Leve - gerar ISO
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "pc-leve/**"
+      - ".github/workflows/pc-leve-iso.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  iso:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Liberar espaço em disco
+        run: sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android /opt/hostedtoolcache/CodeQL
+
+      - name: Gerar a ISO (Debian dentro do Docker)
+        run: |
+          sudo docker run --rm --privileged \
+            -v "$GITHUB_WORKSPACE/pc-leve":/pc-leve -w /pc-leve \
+            debian:trixie ./build.sh
+          ls -lh pc-leve/saida
+
+      - name: Guardar o log da construção
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: pc-leve/saida/build.log
+          if-no-files-found: ignore
+
+      - name: Preparar o QEMU
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm || true
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq qemu-system-x86 ovmf imagemagick
+
+      - name: Testar no QEMU
+        run: python3 pc-leve/teste/testar-qemu.py pc-leve/saida/*.iso fotos
+
+      - name: Publicar as fotos do teste (branch pc-leve-testes)
+        if: always()
+        run: |
+          [ -d fotos ] || exit 0
+          cd fotos
+          git init -q -b pc-leve-testes
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add . && git commit -qm "Fotos do teste da ISO ($GITHUB_SHA)"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" pc-leve-testes
+
+      - name: Publicar a ISO para download (Releases)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG=pc-leve-iso
+          gh release delete "$TAG" --yes --cleanup-tag 2>/dev/null || true
+          gh release create "$TAG" pc-leve/saida/*.iso pc-leve/saida/*.sha256 \
+            --target "$GITHUB_SHA" --prerelease \
+            --title "PC Leve - ISO para pendrive" \
+            --notes "Baixe o arquivo .iso abaixo e siga o README (pasta pc-leve). Grave com o Rufus em modo Imagem DD."
