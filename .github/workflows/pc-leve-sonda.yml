@@ -1,0 +1,26 @@
+# Temporário: mostra como o instalador Calamares vem configurado no Debian 13.
+name: PC Leve - sonda do instalador
+
+on:
+  push:
+    paths:
+      - ".github/workflows/pc-leve-sonda.yml"
+
+jobs:
+  sonda:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ver arquivos do Calamares no Debian 13
+        run: |
+          sudo docker run --rm debian:trixie bash -c '
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update -qq >/dev/null
+            apt-get install -y -qq --no-install-recommends calamares-settings-debian >/dev/null 2>&1
+            echo "=== DEPENDS ==="; apt-cache depends calamares-settings-debian calamares | grep -E "Depends|Recommends"
+            echo "=== ARQUIVOS ==="; dpkg -L calamares-settings-debian
+            for f in /etc/calamares/settings.conf /etc/calamares/modules/*.conf /usr/sbin/*bootloader* /usr/sbin/sources-* /usr/share/applications/*calamares* /usr/share/applications/install-debian.desktop /usr/bin/install-debian /etc/xdg/autostart/*calamares*; do
+              [ -f "$f" ] && { echo "===== $f"; cat "$f"; }
+            done
+            echo "=== branding ==="; ls -R /etc/calamares/branding | head -30
+            cat /etc/calamares/branding/*/branding.desc 2>/dev/null | head -60
+          '
