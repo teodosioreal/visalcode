@@ -481,20 +481,23 @@ EOT
 fi
 
 # Barra de tarefas: atalhos rápidos para Firefox, Arquivos e Terminal
-PAINEL=/etc/xdg/lxqt/panel.conf
 cat > /tmp/atalhos <<'EOT'
 apps\1\desktop=/usr/share/applications/firefox-esr.desktop
 apps\2\desktop=/usr/share/applications/pcmanfm-qt.desktop
 apps\3\desktop=/usr/share/applications/qterminal.desktop
 apps\size=3
 EOT
-if [ -f "$PAINEL" ] && grep -q '^\[quicklaunch\]' "$PAINEL"; then
-    sed -i '/^\[quicklaunch\]/,/^\[/{/^apps\\/d}' "$PAINEL"
-    sed -i '/^\[quicklaunch\]/r /tmp/atalhos' "$PAINEL"
-elif [ -f "$PAINEL" ]; then
-    printf '\n[quicklaunch]\ntype=quicklaunch\n' >> "$PAINEL"
-    cat /tmp/atalhos >> "$PAINEL"
-fi
+# (o LXQt novo guarda o padrão em /usr/share/lxqt; o antigo em /etc/xdg/lxqt)
+for PAINEL in /usr/share/lxqt/panel.conf /etc/xdg/lxqt/panel.conf; do
+    [ -f "$PAINEL" ] || continue
+    if grep -q '^\[quicklaunch\]' "$PAINEL"; then
+        sed -i '/^\[quicklaunch\]/,/^\[/{/^apps\\/d}' "$PAINEL"
+        sed -i '/^\[quicklaunch\]/r /tmp/atalhos' "$PAINEL"
+    else
+        printf '\n[quicklaunch]\ntype=quicklaunch\n' >> "$PAINEL"
+        cat /tmp/atalhos >> "$PAINEL"
+    fi
+done
 rm -f /tmp/atalhos
 
 # Atalhos da área de trabalho sem o aviso "!" de "não confiável":

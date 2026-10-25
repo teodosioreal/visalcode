@@ -142,9 +142,9 @@ if os.path.exists(codigo):
         "-drive", f"if=pflash,format=raw,readonly=on,file={codigo}",
         "-drive", "if=pflash,format=raw,file=/tmp/ovmf_vars.fd",
         "-cdrom", ISO])
-    time.sleep(12 * ESPERA)
+    time.sleep(6 * ESPERA)
     vm.foto("10-menu-boot-uefi")
-    time.sleep(140 * ESPERA)
+    time.sleep(146 * ESPERA)
     vm.foto("11-area-de-trabalho-uefi")
     vm.desligar()
 print("Testes concluídos.")
