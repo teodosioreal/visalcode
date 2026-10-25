@@ -193,6 +193,7 @@ upower
 # --- Programas do dia a dia ---
 pcmanfm-qt
 gvfs
+libglib2.0-bin
 udisks2
 lximage-qt
 qpdfview
@@ -341,7 +342,11 @@ fi
 
 # Descobre o pendrive de onde o sistema ligou
 PART=$(findmnt -no SOURCE /run/live/medium 2>/dev/null)
-DISCO=$(lsblk -no PKNAME "$PART" 2>/dev/null | head -1)
+if [ "$(lsblk -dno TYPE "$PART" 2>/dev/null)" = "disk" ]; then
+    DISCO=$(basename "$PART")          # montou o pendrive inteiro
+else
+    DISCO=$(lsblk -no PKNAME "$PART" 2>/dev/null | head -1)
+fi
 if [ -z "$DISCO" ] || [ "$(lsblk -dno TRAN "/dev/$DISCO")" != "usb" ]; then
     echo "Não achei o pendrive de onde o sistema ligou."
     echo "(Isso só funciona quando o sistema liga por um pendrive USB.)"
@@ -475,10 +480,31 @@ OnlyShowIn=LXQt;
 EOT
 fi
 
-# Barra de tarefas: atalho rápido aponta para o Firefox ESR
-if [ -f /etc/xdg/lxqt/panel.conf ]; then
-    sed -i 's#firefox\.desktop#firefox-esr.desktop#g' /etc/xdg/lxqt/panel.conf
+# Barra de tarefas: atalhos rápidos para Firefox, Arquivos e Terminal
+PAINEL=/etc/xdg/lxqt/panel.conf
+cat > /tmp/atalhos <<'EOT'
+apps\1\desktop=/usr/share/applications/firefox-esr.desktop
+apps\2\desktop=/usr/share/applications/pcmanfm-qt.desktop
+apps\3\desktop=/usr/share/applications/qterminal.desktop
+apps\size=3
+EOT
+if [ -f "$PAINEL" ] && grep -q '^\[quicklaunch\]' "$PAINEL"; then
+    sed -i '/^\[quicklaunch\]/,/^\[/{/^apps\\/d}' "$PAINEL"
+    sed -i '/^\[quicklaunch\]/r /tmp/atalhos' "$PAINEL"
+elif [ -f "$PAINEL" ]; then
+    printf '\n[quicklaunch]\ntype=quicklaunch\n' >> "$PAINEL"
+    cat /tmp/atalhos >> "$PAINEL"
 fi
+rm -f /tmp/atalhos
+
+# Atalhos da área de trabalho sem o aviso "!" de "não confiável":
+# marca como confiáveis toda vez que a sessão gráfica começa.
+cat > /etc/X11/Xsession.d/90pc-leve-atalhos <<'EOT'
+for f in "$HOME"/Desktop/*.desktop; do
+    [ -f "$f" ] && gio set "$f" metadata::trust true 2>/dev/null
+done
+true
+EOT
 
 # Firefox: cache na memória (o pendrive fica mais rápido e dura mais)
 if [ -f /etc/firefox-esr/firefox-esr.js ]; then
