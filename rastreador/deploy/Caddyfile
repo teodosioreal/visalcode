@@ -1,0 +1,5 @@
+# Caddy gera e renova o HTTPS sozinho. Troque pelo seu subdomínio
+# (o DNS dele precisa apontar para o IP da VPS).
+track.seudominio.com {
+	reverse_proxy 127.0.0.1:3100
+}
