@@ -26,7 +26,7 @@ ESPERA = 1 if KVM else 4   # sem KVM tudo é ~4x mais lento
 # O sistema testado usa teclado ABNT2. Nomes de teclas do QEMU (layout
 # americano) que produzem cada caractere no ABNT2:
 TECLAS = {" ": "spc", "-": "minus", ".": "dot", ",": "comma", ";": "slash",
-          "\n": "ret", "_": "shift-minus", "=": "equal"}
+          "\n": "ret", "_": "shift-minus", "=": "equal", ":": "shift-slash"}
 
 
 class Qemu:
@@ -92,15 +92,18 @@ class Qemu:
 
 
 # --- Teste 1: BIOS Legacy, como CD ------------------------------------------
-vm = Qemu("bios", ["-cdrom", ISO, "-boot", "d"])
+# Relógio do computador virtual errado de propósito (ano 2031): os sites só
+# abrem se o sistema acertar a hora sozinho pela internet.
+vm = Qemu("bios", ["-cdrom", ISO, "-boot", "d",
+                   "-rtc", "base=2031-01-01T12:00:00"])
 time.sleep(3)
 vm.foto("01-menu-boot-bios")
 time.sleep(150 * ESPERA)
 vm.foto("02-area-de-trabalho")
-vm.executar("firefox-esr example.com")
+vm.executar("firefox-esr https:example.com")
 time.sleep(60 * ESPERA)
 vm.foto("03-firefox")
-vm.terminal("nmcli device; timedatectl; free -h; zramctl")
+vm.terminal("date; timedatectl show -p NTPSynchronized; nmcli device; free -h")
 vm.foto("04-terminal-rede-relogio-memoria")
 vm.desligar()
 

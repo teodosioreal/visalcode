@@ -257,6 +257,25 @@ vm.swappiness=100
 vm.vfs_cache_pressure=50
 EOF
 
+# Relógio: acerta a hora assim que a internet conecta (o notebook perde a
+# hora quando desliga). Tenta o jeito normal (NTP); se a rede bloquear,
+# pega a hora do cabeçalho de um site.
+mkdir -p $R/etc/NetworkManager/dispatcher.d
+cat > $R/etc/NetworkManager/dispatcher.d/90-pc-leve-hora <<'EOF'
+#!/bin/sh
+case "$2" in up|connectivity-change) ;; *) exit 0 ;; esac
+systemctl restart systemd-timesyncd 2>/dev/null
+(
+    sleep 20
+    [ "$(timedatectl show -p NTPSynchronized --value)" = "yes" ] && exit 0
+    DATA=$(wget -q -S --spider --max-redirect=0 http://www.google.com 2>&1 \
+        | sed -n 's/^ *Date: //p' | head -1)
+    [ -n "$DATA" ] && date -s "$DATA" >/dev/null && hwclock --systohc 2>/dev/null
+) >/dev/null 2>&1 &
+exit 0
+EOF
+chmod 755 $R/etc/NetworkManager/dispatcher.d/90-pc-leve-hora
+
 # Registros do sistema só na memória: menos escrita no pendrive = mais rápido
 mkdir -p $R/etc/systemd/journald.conf.d
 cat > $R/etc/systemd/journald.conf.d/pc-leve.conf <<'EOF'
